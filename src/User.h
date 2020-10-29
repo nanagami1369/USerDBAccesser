@@ -1,12 +1,6 @@
 #pragma once
 #include <string>
-enum t_Level {
-    ADMIN,
-    PREM,
-    GEN,
-    TRY
-};
-
+#include "t_level.h"
 class User {
   public:
     std::string ID;
