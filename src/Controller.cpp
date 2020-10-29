@@ -19,8 +19,6 @@ static int StringToIntForStdIO() {
 
 Controller::Controller(UserDB *db) {
     this->db = db;
-    db->add("田中", "1243251", true, ADMIN);
-    db->add("中田", "24332243", true, TRY);
 }
 
 Controller::~Controller() {

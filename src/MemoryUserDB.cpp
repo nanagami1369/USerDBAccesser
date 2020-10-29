@@ -24,3 +24,9 @@ void UserDB::WriterAllUserToConsole() {
         std::cout << user->toString() << std::endl;
     }
 }
+
+UserDB::UserDB() {
+    this->add("田中", "1243251", true, ADMIN);
+    this->add("中田", "24332243", true, TRY);
+}
+UserDB::~UserDB() {}

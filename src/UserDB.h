@@ -15,4 +15,6 @@ class UserDB {
         bool avail,
         t_Level level);
     void WriterAllUserToConsole();
+    UserDB();
+    ~UserDB();
 };
