@@ -35,6 +35,6 @@
 
 ## 使用したライブラリー
 
-- SQLiteCpp
-  - Copyright (c) 2012-2020 Sebastien Rombauts (sebastien.rombauts@gmail.com)
-  - [MIT License](https://github.com/SRombauts/SQLiteCpp/blob/master/LICENSE.txt)
+* SQLiteCpp
+  * Copyright (c) 2012-2020 Sebastien Rombauts (sebastien.rombauts@gmail.com)
+  * [MIT License](https://github.com/SRombauts/SQLiteCpp/blob/master/LICENSE.txt)
