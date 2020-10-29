@@ -10,6 +10,9 @@
 
 ```bash
   git clone https://github.com/nanagami1369/UserDBAccesser
+  cd UserDBAccesser
+  git submodule init
+  git submodule update
   mkdir build
   cd build
   cmake ../
