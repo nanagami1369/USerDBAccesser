@@ -23,7 +23,10 @@
   git submodule update
   mkdir build
   cd build
-  cmake ../
+  # DBにメモリーを使う場合 (default)
+  cmake -DDB_TYPE=memory ../
+  # DBにsqliteを使う場合
+  cmake -DDB_TYPE=sqlite3 ../
   make
 ```
 
