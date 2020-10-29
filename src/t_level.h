@@ -7,3 +7,4 @@ enum t_Level {
 };
 
 std::string t_LevelToString(t_Level level);
+t_Level intToT_Level(int level);
