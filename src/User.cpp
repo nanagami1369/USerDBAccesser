@@ -16,6 +16,6 @@ std::string User::toString() {
     auto pass = "********";
 
     auto avail = Avail ? "true" : "false";
-    auto t_Level = t_LevelToString(Level);
-    return ID + "|" + Name + "|" + pass + "|" + avail + "|" + t_Level;
+    auto level = t_LevelToString(Level);
+    return ID + "|" + Name + "|" + pass + "|" + avail + "|" + level;
 }
