@@ -51,13 +51,10 @@ void UserDB::WriterAllUserToConsole() {
 UserDB::UserDB() {
     try {
         SQLite::Database db("user.sqlite3", SQLite::OPEN_READWRITE | SQLite::OPEN_CREATE);
-        std::cout << "SQLite database file '" << db.getFilename() << "' opened successfully" << std::endl;
         db.exec("CREATE TABLE IF NOT EXISTS user (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, pass TEXT, avail NUMERIC, level INTGER)");
 
     } catch (const std::exception &e) {
         std::cerr << "SQLiteでエラーが発生しました。: " << e.what() << std::endl;
     }
 }
-UserDB::~UserDB() {
-    std::cout << "デコった" << std::endl;
-}
+UserDB::~UserDB() {}
