@@ -4,8 +4,6 @@
 #include <string>
 #include <vector>
 
-std::string getHashPassWord(std::string pass);
-
 class UserDB {
   private:
     std::vector<std::shared_ptr<User>> Memory;
