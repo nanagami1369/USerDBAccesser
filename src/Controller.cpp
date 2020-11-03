@@ -1,6 +1,8 @@
 #include "Controller.h"
 #include "UserDB.h"
 #include <iostream>
+#include <termios.h>
+#include <unistd.h>
 static int StringToIntForStdIO() {
     auto number = -1;
     std::string value = "";
@@ -40,17 +42,55 @@ std::string Controller::readName() {
 
 std::string Controller::readPassward() {
     std::string pass = "";
+    std::string confirmationPass = "";
+    struct termios term;
+    struct termios save;
     while (true) {
         std::cout << "パスワードを入力して下さい>";
+        tcgetattr(STDIN_FILENO, &term);
+        save = term;
+        term.c_lflag &= ~ECHO;
+        // パスワード入力時はターミナルの応答を消す
+        tcsetattr(STDIN_FILENO, TCSANOW, &term);
         std::getline(std::cin, pass);
+        tcsetattr(STDIN_FILENO, TCSANOW, &save);
+        putchar('\n');
         if (pass.empty() || pass.length() == 0) {
             std::cerr << "パスワードが空文字です" << std::endl;
-        } else if (pass.length() < 8) {
-            std::cerr << "パスワードは8文字以上にしてください" << std::endl;
-        } else {
-            return pass;
+            continue;
         }
+        if (pass.length() < 8) {
+            std::cerr << "パスワードは8文字以上にしてください" << std::endl;
+            continue;
+        }
+        while (true) {
+            std::cout << "もう一度パスワードを入力して下さい>";
+            tcgetattr(STDIN_FILENO, &term);
+            save = term;
+            term.c_lflag &= ~ECHO;
+            // パスワード入力時はターミナルの応答を消す
+            tcsetattr(STDIN_FILENO, TCSANOW, &term);
+            std::getline(std::cin, confirmationPass);
+            tcsetattr(STDIN_FILENO, TCSANOW, &save);
+            putchar('\n');
+            if (confirmationPass.empty() || confirmationPass.length() == 0) {
+                std::cerr << "パスワードが空文字です" << std::endl;
+                continue;
+            }
+            if (confirmationPass.length() < 8) {
+                std::cerr << "パスワードは8文字以上にしてください" << std::endl;
+                continue;
+            }
+            break;
+        }
+        // パスワードが一致しなかった場合は、パスワードの入力をやり直す
+        if (pass != confirmationPass) {
+            std::cerr << "パスワードが一致しませんでした。" << std::endl;
+            continue;
+        }
+        break;
     }
+    return pass;
 }
 
 bool Controller::readIsAvail() {
