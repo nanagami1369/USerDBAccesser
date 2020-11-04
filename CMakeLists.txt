@@ -5,12 +5,20 @@ set(DB_TYPE "memory" CACHE STRING "ビルド時に使用するデータベース
 
 message(STATUS "DB_TYPE : ${DB_TYPE}")
 
+set(USER_DB_ACCESSER_COMMON_SRC
+ ${PROJECT_SOURCE_DIR}/src/main.cpp
+ ${PROJECT_SOURCE_DIR}/src/Controller.cpp
+ ${PROJECT_SOURCE_DIR}/src/User.cpp
+ ${PROJECT_SOURCE_DIR}/src/t_Level.cpp
+ ${PROJECT_SOURCE_DIR}/src/getHashPassWord.cpp
+)
+
 if("${DB_TYPE}" MATCHES "^memory$")
-    add_executable(UserDBAccesser src/main.cpp src/MemoryUserDB.cpp src/Controller.cpp src/User.cpp src/t_Level.cpp src/getHashPassWord.cpp)
+    add_executable(UserDBAccesser ${USER_DB_ACCESSER_COMMON_SRC} src/MemoryUserDB.cpp)
     target_link_libraries(UserDBAccesser crypt)
 elseif("${DB_TYPE}" MATCHES "^sqlite3$")
     add_subdirectory(SQLiteCpp)
     include_directories(SQLiteCpp/include)
-    add_executable(UserDBAccesser src/main.cpp src/SQLiteUserDB.cpp src/Controller.cpp src/User.cpp src/t_Level.cpp src/getHashPassWord.cpp)
-target_link_libraries(UserDBAccesser SQLiteCpp crypt)
+    add_executable(UserDBAccesser ${USER_DB_ACCESSER_SQLITE3_SRC} src/SQLiteUserDB.cpp)
+    target_link_libraries(UserDBAccesser SQLiteCpp crypt)
 endif()
