@@ -31,6 +31,58 @@ void UserDB::add(
         std::cerr << "SQLiteでエラーが発生しました。: " << e.what() << std::endl;
     }
 }
+
+User UserDB::search(std::string id) {
+    auto idNumber = 0;
+    try {
+        idNumber = std::stoi(id);
+    } catch (const std::invalid_argument) {
+        throw std::invalid_argument("IDは数字のみです");
+
+    } catch (const std::out_of_range) {
+        throw std::out_of_range("値が大きすぎるか小さすぎます");
+    }
+    try {
+        std::stringstream queryString;
+        queryString << "SELECT * FROM user WHERE id=" << idNumber << " LIMIT 1";
+        SQLite::Database db("user.sqlite3", SQLite::OPEN_READWRITE);
+        SQLite::Statement query(db, queryString.str());
+        if (query.executeStep()) {
+            auto id = query.getColumn(0);
+            auto name = query.getColumn(1);
+            auto pass = query.getColumn(2);
+            auto avail = query.getColumn(3).getInt() == 1 ? true : false;
+            auto level = intToT_Level(query.getColumn(4));
+            return User(id, name, pass, avail, level);
+        } else {
+            throw std::range_error("アカウントが見つかりませんでした");
+        }
+    } catch (const std::exception &e) {
+        throw;
+    }
+}
+
+void UserDB::remove(std::string id) {
+    auto idNumber = 0;
+    try {
+        idNumber = std::stoi(id);
+    } catch (const std::invalid_argument) {
+        throw std::invalid_argument("IDは数字のみです");
+
+    } catch (const std::out_of_range) {
+        throw std::out_of_range("値が大きすぎるか小さすぎます");
+    }
+    try {
+        std::stringstream query;
+        query << "DELETE FROM user WHERE id=" << idNumber;
+        SQLite::Database db("user.sqlite3", SQLite::OPEN_READWRITE);
+        std::cout << query.str() << std::endl;
+        db.exec(query.str());
+    } catch (const std::exception &e) {
+        std::cerr << "SQLiteでエラーが発生しました。: " << e.what() << std::endl;
+    }
+}
+
 void UserDB::WriterAllUserToConsole() {
     try {
         SQLite::Database db("user.sqlite3", SQLite::OPEN_READONLY);

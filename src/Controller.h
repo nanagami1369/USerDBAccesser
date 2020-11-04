@@ -8,7 +8,7 @@ class Controller {
     std::string readPassward();
     bool readIsAvail();
     t_Level readLevel();
-
+    void removeUser();
   public:
     Controller(UserDB *db);
     ~Controller();

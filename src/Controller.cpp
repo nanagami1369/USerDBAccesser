@@ -127,12 +127,54 @@ t_Level Controller::readLevel() {
     }
 }
 
+void Controller::removeUser() {
+    std::string id = "";
+    while (true) {
+        std::cout << "IDを入力して下さい>";
+        std::getline(std::cin, id);
+        if (id.empty() || id.length() == 0) {
+            std::cerr << "IDが空文字です" << std::endl;
+            continue;
+        }
+        break;
+    }
+    try {
+        auto user = this->db->search(id);
+        std::cout << "アカウントが見つかりました" << std::endl;
+        while (true) {
+            std::cout << "==================================" << std::endl;
+            std::cout << user.toString() << std::endl;
+            std::cout << "==================================" << std::endl;
+
+            std::cout << "このアカウントを削除します" << std::endl;
+            std::cout << "よろしいですか？ (0:はい 1:いいえ)>";
+            auto select = StringToIntForStdIO();
+            switch (select) {
+            case 0:
+                db->remove(user.ID);
+                std::cout << "アカウントを削除しました。" << std::endl;
+                return;
+            case 1:
+                std::cout << "アカウントを削除しませんでした" << std::endl;
+                return;
+            default:
+                std::cerr << "無効な数字です" << std::endl;
+                continue;
+            }
+            break;
+        }
+
+    } catch (const std::exception &e) {
+        std::cerr << e.what() << std::endl;
+    }
+}
+
 void Controller::start() {
     std::cout << "UserDBへようこそ!!" << std::endl;
 
     int controlNumber = 100;
     while (controlNumber != 0) {
-        std::cout << "何をしますか (0:終了 1:ユーザーの追加 2:ユーザー一覧)>";
+        std::cout << "何をしますか (0:終了 1:ユーザーの追加 2:ユーザー一覧 3:ユーザー削除)>";
         controlNumber = StringToIntForStdIO();
         std::string name = "";
         std::string pass = "";
@@ -154,6 +196,9 @@ void Controller::start() {
         case 2:
             std::cout << "ユーザーの一覧を表示します" << std::endl;
             db->WriterAllUserToConsole();
+            break;
+        case 3:
+            removeUser();
             break;
         default:
             std::cerr << "無効な数字です" << std::endl;
