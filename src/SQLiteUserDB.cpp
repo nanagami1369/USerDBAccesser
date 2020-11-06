@@ -37,7 +37,9 @@ void UserDB::add(
         SQLite::Database db("user.sqlite3", SQLite::OPEN_READWRITE);
         db.exec(query.str());
     } catch (const std::exception &e) {
-        std::cerr << "SQLiteでエラーが発生しました。: " << e.what() << std::endl;
+        std::stringstream message;
+        message << "SQLiteでエラーが発生しました。: " << e.what();
+        throw std::runtime_error(message.str());
     }
 }
 
@@ -67,7 +69,9 @@ User UserDB::search(std::string id) {
             throw std::range_error("アカウントが見つかりませんでした");
         }
     } catch (const std::exception &e) {
-        throw;
+        std::stringstream message;
+        message << "SQLiteでエラーが発生しました。: " << e.what();
+        throw std::runtime_error(message.str());
     }
 }
 
@@ -88,7 +92,9 @@ void UserDB::remove(std::string id) {
         std::cout << query.str() << std::endl;
         db.exec(query.str());
     } catch (const std::exception &e) {
-        std::cerr << "SQLiteでエラーが発生しました。: " << e.what() << std::endl;
+        std::stringstream message;
+        message << "SQLiteでエラーが発生しました。: " << e.what();
+        throw std::runtime_error(message.str());
     }
 }
 
@@ -154,7 +160,9 @@ void UserDB::WriterAllUserToConsole() {
             std::cout << user->toString() << std::endl;
         }
     } catch (const std::exception &e) {
-        std::cerr << e.what() << '\n';
+        std::stringstream message;
+        message << "SQLiteでエラーが発生しました。: " << e.what();
+        throw std::runtime_error(message.str());
     }
 }
 
@@ -164,7 +172,9 @@ UserDB::UserDB() {
         db.exec("CREATE TABLE IF NOT EXISTS user (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, pass TEXT, avail NUMERIC, level INTGER)");
 
     } catch (const std::exception &e) {
-        std::cerr << "SQLiteでエラーが発生しました。: " << e.what() << std::endl;
+        std::stringstream message;
+        message << "SQLiteでエラーが発生しました。: " << e.what();
+        throw std::runtime_error(message.str());
     }
 }
 UserDB::~UserDB() {}
