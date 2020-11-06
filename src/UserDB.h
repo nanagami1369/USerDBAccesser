@@ -19,6 +19,15 @@ class UserDB {
         t_Level level);
     User search(std::string id);
     void remove(std::string id);
+    // パスワードがハッシュ化されたパスワードならそのまま変更
+    // 生パスワードなら、ハッシュ化してから変更
+    // add関数のように弾かないので注意！！
+    void update(
+        std::string updateUserId,
+        std::string name,
+        std::string pass,
+        bool avail,
+        t_Level level);
     void WriterAllUserToConsole();
     UserDB();
     ~UserDB();

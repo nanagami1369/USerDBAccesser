@@ -92,6 +92,53 @@ void UserDB::remove(std::string id) {
     }
 }
 
+void UserDB::update(
+    std::string updateUserId,
+    std::string name,
+    std::string pass,
+    bool avail,
+    t_Level level) {
+    if (name.empty() || name.length() == 0) {
+        throw std::invalid_argument("Nameが空文字かNullです");
+    }
+    if (pass.empty() || pass.length() == 0) {
+        throw std::invalid_argument("Passが空文字かNullです");
+    }
+
+    // アカウントの存在確認用
+    // アカウントがなければ、例外を返却
+    try {
+        search(updateUserId);
+    } catch (const std::range_error &e) {
+        throw;
+    }
+
+    try {
+        std::string hashPassword = pass;
+        auto isHashPassWord = std::regex_search(pass, re);
+        if (!isHashPassWord) {
+            hashPassword = getHashPassWord(pass);
+        }
+
+        std::stringstream query;
+        query << "UPDATE user SET"
+              << " name = '" << name << "',"
+              << " pass = '" << hashPassword << "',"
+              << " avail = " << (int)avail << ","
+              << " level = " << (int)level
+              << " WHERE id = " << updateUserId;
+        std::cout << query.str() << '\n';
+        SQLite::Database db("user.sqlite3", SQLite::OPEN_READWRITE);
+        db.exec(query.str());
+    } catch (const std::range_error &e) {
+        throw;
+    } catch (const std::exception &e) {
+        std::stringstream message;
+        message << "SQLiteでエラーが発生しました。: " << e.what();
+        throw std::runtime_error(message.str());
+    }
+}
+
 void UserDB::WriterAllUserToConsole() {
     try {
         SQLite::Database db("user.sqlite3", SQLite::OPEN_READONLY);

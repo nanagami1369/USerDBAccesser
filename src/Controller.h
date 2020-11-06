@@ -1,6 +1,6 @@
 #pragma once
-#include <string>
 #include "UserDB.h"
+#include <string>
 class Controller {
   private:
     UserDB *db;
@@ -9,6 +9,7 @@ class Controller {
     bool readIsAvail();
     t_Level readLevel();
     void removeUser();
+    void changeAvail();
   public:
     Controller(UserDB *db);
     ~Controller();

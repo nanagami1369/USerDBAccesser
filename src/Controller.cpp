@@ -185,12 +185,87 @@ void Controller::removeUser() {
     }
 }
 
+void Controller::changeAvail() {
+    std::string id;
+    while (true) {
+        std::cout << "IDを入力して下さい>";
+        std::getline(std::cin, id);
+        if (id.empty() || id.length() == 0) {
+            std::cerr << "IDが空文字です" << std::endl;
+            continue;
+        }
+        break;
+    }
+    try {
+        auto user = db->search(id);
+        std::cout << "アカウントが見つかりました" << std::endl;
+        while (true) {
+            std::cout << "==================================" << std::endl;
+            std::cout << user.toString() << std::endl;
+            std::cout << "==================================" << std::endl;
+            if (user.Avail) {
+                std::cout << "このアカウントは有効です" << std::endl;
+                std::cout << "無効化しますか？(0:はい 1:いいえ)" << std::endl;
+                auto select = StringToIntForStdIO();
+                switch (select) {
+                case 0:
+                    try {
+                        db->update(user.ID, user.Name, user.Pass, false, user.Level);
+                    } catch (const std::range_error &e) {
+                        std::cerr << "アカウントが見つかりませんでした" << std::endl;
+                    } catch (const std::exception &e) {
+                        std::cerr << e.what() << std::endl;
+                    }
+                    std::cout << "アカウントを無効化しました" << std::endl;
+                    return;
+                case 1:
+                    std::cout << "アカウントを無効化しませんでした" << std::endl;
+                    return;
+                default:
+                    std::cerr << "無効な数字です" << std::endl;
+                    continue;
+                }
+            } else {
+                std::cout << "このアカウントは無効化されています" << std::endl;
+                std::cout << "有効にしますか？(0:はい 1:いいえ)" << std::endl;
+                auto select = StringToIntForStdIO();
+                switch (select) {
+                case 0:
+                    try {
+                        db->update(user.ID, user.Name, user.Pass, true, user.Level);
+                    } catch (const std::range_error &e) {
+                        std::cerr << "アカウントが見つかりませんでした" << std::endl;
+                    } catch (const std::exception &e) {
+                        std::cerr << e.what() << std::endl;
+                    }
+                    std::cout << "アカウントを有効にしました" << std::endl;
+                    return;
+                case 1:
+                    std::cout << "アカウントを有効にしませんでした" << std::endl;
+                    return;
+                default:
+                    std::cerr << "無効な数字です" << std::endl;
+                    continue;
+                }
+            }
+        }
+    } catch (const std::range_error &e) {
+        std::cerr << "アカウントが見つかりませんでした" << std::endl;
+        return;
+    }
+}
+
 void Controller::start() {
     std::cout << "UserDBへようこそ!!" << std::endl;
 
     int controlNumber = 100;
     while (controlNumber != 0) {
-        std::cout << "何をしますか (0:終了 1:ユーザーの追加 2:ユーザー一覧 3:ユーザー削除)>";
+        std::cout << " 0:終了\n"
+                     " 1:ユーザーの追加\n"
+                     " 2:ユーザー一覧\n"
+                     " 3:ユーザー削除\n"
+                     " 4:ユーザーの無効化、有効化\n"
+                     "何をしますか？(数字でメニューを選択)>";
         controlNumber = StringToIntForStdIO();
         std::string name = "";
         std::string pass = "";
@@ -215,6 +290,9 @@ void Controller::start() {
             break;
         case 3:
             removeUser();
+            break;
+        case 4:
+            changeAvail();
             break;
         default:
             std::cerr << "無効な数字です" << std::endl;

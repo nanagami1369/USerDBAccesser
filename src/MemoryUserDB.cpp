@@ -82,6 +82,36 @@ void UserDB::remove(std::string id) {
     }
 }
 
+void UserDB::update(
+    std::string updateUserId,
+    std::string name,
+    std::string pass,
+    bool avail,
+    t_Level level) {
+    if (name.empty() || name.length() == 0) {
+        throw std::invalid_argument("Nameが空文字かNullです");
+    }
+    if (pass.empty() || pass.length() == 0) {
+        throw std::invalid_argument("Passが空文字かNullです");
+    }
+
+    int index;
+    try {
+        index = searchIndex(updateUserId, Memory);
+    } catch (const std::range_error &e) {
+        throw;
+    }
+    auto user = Memory[index].get();
+    user->Name = name;
+    user->Pass = pass;
+    auto isHashPassWord = std::regex_search(pass, re);
+    if (!isHashPassWord) {
+        user->Pass = getHashPassWord(pass);
+    }
+    user->Avail = avail;
+    user->Level = level;
+}
+
 void UserDB::WriterAllUserToConsole() {
     std::cout << " ID | Name | Pass | avail | Level" << std::endl;
     for (auto &user : this->Memory) {
