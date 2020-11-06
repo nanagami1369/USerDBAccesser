@@ -2,6 +2,8 @@
 #include <crypt.h>
 #include <stdexcept>
 
+static const char *SHA_512 = "$6$";
+
 std::string getHashPassWord(std::string pass) {
     struct timespec ts;
     if (timespec_get(&ts, TIME_UTC) == 0) {
@@ -9,7 +11,7 @@ std::string getHashPassWord(std::string pass) {
     }
     srandom(ts.tv_nsec ^ ts.tv_sec);
     auto r = random();
-    std::string salt = "$5$" + std::to_string(r);
+    std::string salt = SHA_512 + std::to_string(r);
     struct crypt_data data;
     data.initialized = 0;
     if (crypt_r(pass.c_str(), salt.c_str(), &data) == NULL) {
