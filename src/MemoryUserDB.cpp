@@ -3,6 +3,7 @@
 #include "getHashPassWord.h"
 #include <exception>
 #include <iostream>
+#include <regex>
 
 const int searchIndex(std::string id, const std::vector<std::shared_ptr<User>> memory) {
     int min = 0;
@@ -22,6 +23,9 @@ const int searchIndex(std::string id, const std::vector<std::shared_ptr<User>> m
     throw std::range_error("アカウントが見つかりませんでした");
 }
 
+static const char *pattern = "^\\$[56]\\$";
+static const std::regex re(pattern);
+
 void UserDB::add(
     std::string name,
     std::string pass,
@@ -32,6 +36,11 @@ void UserDB::add(
     }
     if (pass.empty() || pass.length() == 0) {
         throw std::invalid_argument("Passが空文字かNullです");
+    }
+    if (std::regex_search(pass, re)) {
+        // ハッシュ化されたパスワードかどうかの判定に、
+        //「$5$」、「$6$」が先頭についてるかで判別するために禁止
+        throw std::invalid_argument("パスワードの先頭には、「$5$」、「$6$」を使えません");
     }
     auto user = new User(std::to_string(index), name, getHashPassWord(pass), avail, level);
     index++;
