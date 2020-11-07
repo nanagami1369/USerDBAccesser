@@ -13,6 +13,7 @@ set(USER_DB_ACCESSER_COMMON_SRC
  ${PROJECT_SOURCE_DIR}/src/getHashPassWord.cpp
 )
 
+include_directories(${PROJECT_SOURCE_DIR}/include)
 if("${DB_TYPE}" MATCHES "^memory$")
     add_executable(UserDBAccesser ${USER_DB_ACCESSER_COMMON_SRC} src/MemoryUserDB.cpp)
     target_link_libraries(UserDBAccesser crypt)
