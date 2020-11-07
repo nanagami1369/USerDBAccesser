@@ -41,3 +41,7 @@
 * SQLiteCpp
   * Copyright (c) 2012-2020 Sebastien Rombauts (sebastien.rombauts@gmail.com)
   * [MIT License](https://github.com/SRombauts/SQLiteCpp/blob/master/LICENSE.txt)
+
+* Google Test
+  * Copyright 2008, Google Inc. All rights reserved.
+  * [BSD-3-Clause License](https://github.com/google/googletest/blob/master/LICENSE)
