@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.1.0)
+cmake_minimum_required(VERSION 3.10)
 project(UserDBAccesser VERSION 1.0.0)
 
 set(DB_TYPE "memory" CACHE STRING "ビルド時に使用するデータベースの種類を指定")
@@ -27,3 +27,13 @@ endif()
 # CLI
 add_executable(UserDBAccesser src/main.cpp src/Controller.cpp)
 target_link_libraries(UserDBAccesser UserDB)
+
+
+# Test
+enable_testing()
+
+add_subdirectory(googletest)
+include_directories(googletest/googletest/include)
+add_executable(UserTest tests/user_test.cpp)
+target_link_libraries(UserTest UserDB gtest_main)
+add_test(NAME AllTest COMMAND UserTest)
