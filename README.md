@@ -36,6 +36,12 @@
     ./build/UserDBAccesser
 ```
 
+## テスト
+
+```bash
+    make test
+```
+
 ## 使用したライブラリー
 
 * SQLiteCpp
