@@ -1,20 +1,18 @@
+#include "MemoryUserDB.h"
 #include "User.h"
 #include "UserDB.h"
-#include "getHashPassWord.h"
-#include <exception>
 #include <iostream>
-#include <regex>
 
-const int searchIndex(std::string id, const std::vector<std::shared_ptr<User>> memory) {
+int MemoryUserDB::searchIndex(const std::string id) {
     int min = 0;
-    int max = memory.size() - 1;
+    int max = Memory.size() - 1;
     int mid;
     while (min <= max) {
         mid = (min + max) / 2;
-        if (memory[mid].get()->ID == id) {
+        if (Memory[mid].get()->ID == id) {
             return mid;
         }
-        if (memory[mid].get()->ID < id) {
+        if (Memory[mid].get()->ID < id) {
             min = mid + 1;
         } else {
             max = mid - 1;
@@ -23,32 +21,17 @@ const int searchIndex(std::string id, const std::vector<std::shared_ptr<User>> m
     throw std::range_error("アカウントが見つかりませんでした");
 }
 
-static const char *pattern = "^\\$[56]\\$";
-static const std::regex re(pattern);
-
-void UserDB::add(
-    std::string name,
-    std::string pass,
-    bool avail,
-    t_Level level) {
-    if (name.empty() || name.length() == 0) {
-        throw std::invalid_argument("Nameが空文字かNullです");
-    }
-    if (pass.empty() || pass.length() == 0) {
-        throw std::invalid_argument("Passが空文字かNullです");
-    }
-    if (std::regex_search(pass, re)) {
-        // ハッシュ化されたパスワードかどうかの判定に、
-        //「$5$」、「$6$」が先頭についてるかで判別するために禁止
-        throw std::invalid_argument("パスワードの先頭には、「$5$」、「$6$」を使えません");
-    }
-    auto user = new User(std::to_string(index), name, getHashPassWord(pass), avail, level);
+void MemoryUserDB::addInternalDatabase(
+    const std::string name,
+    const std::string hashedPass,
+    const bool avail,
+    const t_Level level) {
+    auto user = new User(std::to_string(index), name, hashedPass, avail, level);
     index++;
     std::shared_ptr<User> userShearPtr(user);
     Memory.push_back(userShearPtr);
 }
-
-User UserDB::search(std::string id) {
+User MemoryUserDB::searchInternalDatabase(const std::string id) {
     int min = 0;
     int max = Memory.size() - 1;
     int mid;
@@ -72,9 +55,9 @@ User UserDB::search(std::string id) {
     throw std::range_error("アカウントが見つかりませんでした");
 }
 
-void UserDB::remove(std::string id) {
+void MemoryUserDB::removeInternalDatabase(const std::string id) {
     try {
-        auto index = searchIndex(id, Memory);
+        auto index = searchIndex(id);
 
         Memory.erase(Memory.begin() + index);
     } catch (const std::range_error &e) {
@@ -82,45 +65,36 @@ void UserDB::remove(std::string id) {
     }
 }
 
-void UserDB::update(
-    std::string updateUserId,
-    std::string name,
-    std::string pass,
-    bool avail,
-    t_Level level) {
-    if (name.empty() || name.length() == 0) {
-        throw std::invalid_argument("Nameが空文字かNullです");
-    }
-    if (pass.empty() || pass.length() == 0) {
-        throw std::invalid_argument("Passが空文字かNullです");
-    }
-
+void MemoryUserDB::updateInternalDatabase(
+    const std::string updateUserId,
+    const std::string name,
+    const std::string hashedPass,
+    const bool avail,
+    const t_Level level) {
     int index;
     try {
-        index = searchIndex(updateUserId, Memory);
+        index = searchIndex(updateUserId);
     } catch (const std::range_error &e) {
         throw;
     }
     auto user = Memory[index].get();
     user->Name = name;
-    user->Pass = pass;
-    auto isHashPassWord = std::regex_search(pass, re);
-    if (!isHashPassWord) {
-        user->Pass = getHashPassWord(pass);
+    // hashedPassが空文字でなければ、パスワードを変更
+    if (!(hashedPass.empty() || hashedPass.length() == 0)) {
+        user->Pass = hashedPass;
     }
     user->Avail = avail;
     user->Level = level;
 }
 
-void UserDB::WriterAllUserToConsole() {
+void MemoryUserDB::WriterAllUserToConsole() {
     std::cout << " ID | Name | Pass | avail | Level" << std::endl;
     for (auto &user : this->Memory) {
         std::cout << user->toString() << std::endl;
     }
 }
 
-UserDB::UserDB() {
-    this->add("田中", "1243251", true, ADMIN);
+MemoryUserDB::MemoryUserDB() {
+    this->add("田中", "12432511", true, ADMIN);
     this->add("中田", "24332243", true, TRY);
 }
-UserDB::~UserDB() {}
