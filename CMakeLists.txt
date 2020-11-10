@@ -12,6 +12,7 @@ set(USER_DB_ACCESSER_COMMON_SRC
  ${PROJECT_SOURCE_DIR}/src/UserDB.cpp
  ${PROJECT_SOURCE_DIR}/src/MemoryUserDB.cpp
  ${PROJECT_SOURCE_DIR}/src/SQLiteUserDB.cpp
+ ${PROJECT_SOURCE_DIR}/src/ValidationException.cpp
 )
 
 include_directories(${PROJECT_SOURCE_DIR}/include)

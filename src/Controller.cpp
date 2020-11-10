@@ -1,5 +1,6 @@
 #include "Controller.h"
 #include "UserDB.h"
+#include "ValidationException.h"
 #include <iostream>
 #include <regex>
 #include <termios.h>
@@ -165,6 +166,8 @@ void Controller::removeUser() {
             break;
         }
 
+    } catch (const ValidationException &e) {
+        std::cerr << e.what() << std::endl;
     } catch (const std::exception &e) {
         std::cerr << e.what() << std::endl;
     }
@@ -198,6 +201,8 @@ void Controller::changeAvail() {
                         db->update(user.ID, user.Name, user.Pass, false, user.Level);
                     } catch (const std::range_error &e) {
                         std::cerr << "アカウントが見つかりませんでした" << std::endl;
+                    } catch (const ValidationException &e) {
+                        std::cerr << e.what() << std::endl;
                     } catch (const std::exception &e) {
                         std::cerr << e.what() << std::endl;
                     }
@@ -220,6 +225,8 @@ void Controller::changeAvail() {
                         db->update(user.ID, user.Name, user.Pass, true, user.Level);
                     } catch (const std::range_error &e) {
                         std::cerr << "アカウントが見つかりませんでした" << std::endl;
+                    } catch (const ValidationException &e) {
+                        std::cerr << e.what() << std::endl;
                     } catch (const std::exception &e) {
                         std::cerr << e.what() << std::endl;
                     }
@@ -237,6 +244,8 @@ void Controller::changeAvail() {
     } catch (const std::range_error &e) {
         std::cerr << "アカウントが見つかりませんでした" << std::endl;
         return;
+    } catch (const ValidationException &e) {
+        std::cerr << e.what() << std::endl;
     }
 }
 

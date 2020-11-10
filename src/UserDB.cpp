@@ -1,30 +1,31 @@
 #include "UserDB.h"
 #include <crypt.h>
+#include "ValidationException.h"
 const char *UserDB::SHA_512 = "$6$";
 
 void UserDB::checkIdValidation(const std::string id) {
     try {
         auto idNumber = std::stoi(id);
     } catch (const std::invalid_argument) {
-        throw std::invalid_argument("IDは数字のみです");
+        throw ValidationException("IDは数字のみです");
 
     } catch (const std::out_of_range) {
-        throw std::out_of_range("IDの有効数字の範囲外です");
+        throw ValidationException("IDの有効数字の範囲外です");
     }
 }
 
 void UserDB::checkNameValidation(const std::string name) {
     if (name.empty() || name[0] == '\n') {
-        throw std::invalid_argument("名前が空文字です");
+        throw ValidationException("名前が空文字です");
     }
 }
 
 void UserDB::checkPassWordValidation(const std::string rowPass) {
     if (rowPass.empty() || rowPass[0] == 0) {
-        throw std::invalid_argument("パスワードが空文字です");
+        throw ValidationException("パスワードが空文字です");
     }
     if (rowPass.length() < 8) {
-        throw std::invalid_argument("パスワードは8文字以上です");
+        throw ValidationException("パスワードは8文字以上です");
     }
 }
 
