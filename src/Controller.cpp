@@ -20,9 +20,6 @@ static int StringToIntForStdIO() {
     return number;
 }
 
-static const char *pattern = "^\\$[56]\\$";
-static const std::regex re(pattern);
-
 Controller::Controller(UserDB *db) {
     this->db = db;
 }
@@ -67,12 +64,6 @@ std::string Controller::readPassward() {
             std::cerr << "パスワードは8文字以上にしてください" << std::endl;
             continue;
         }
-        if (std::regex_search(pass, re)) {
-            // ハッシュ化されたパスワードかどうかの判定に、
-            //「$5$」、「$6$」が先頭についてるかで判別するために禁止
-            std::cerr << "パスワードの先頭には、「$5$」、「$6$」を使えません" << std::endl;
-            continue;
-        }
         while (true) {
             std::cout << "もう一度パスワードを入力して下さい>";
             tcgetattr(STDIN_FILENO, &term);
@@ -89,12 +80,6 @@ std::string Controller::readPassward() {
             }
             if (confirmationPass.length() < 8) {
                 std::cerr << "パスワードは8文字以上にしてください" << std::endl;
-                continue;
-            }
-            if (std::regex_search(pass, re)) {
-                // ハッシュ化されたパスワードかどうかの判定に、
-                //「$5$」、「$6$」が先頭についてるかで判別するために禁止
-                std::cerr << "パスワードの先頭には、「$5$」、「$6$」を使えません" << std::endl;
                 continue;
             }
             break;
