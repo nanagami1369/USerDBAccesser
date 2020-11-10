@@ -106,7 +106,7 @@ void UserDB::update(
     checkUpdateValidation(updateUserId, name, rowPass, avail, level);
     // rowPassが空文字の場合はパスワードを変更しないと判断
     std::string hashedPass;
-    if (!(rowPass.empty() || rowPass.length() == 0)) {
+    if (!rowPass.empty()) {
         hashedPass = createHashPassWord(rowPass, SHA_512);
     }
     updateInternalDatabase(updateUserId, name, hashedPass, avail, level);
