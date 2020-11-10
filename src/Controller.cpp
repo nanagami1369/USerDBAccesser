@@ -193,7 +193,7 @@ void Controller::changeAvail() {
             std::cout << "==================================" << std::endl;
             if (user.Avail) {
                 std::cout << "このアカウントは有効です" << std::endl;
-                std::cout << "無効化しますか？(0:はい 1:いいえ)" << std::endl;
+                std::cout << "無効化しますか？(0:はい 1:いいえ)>";
                 auto select = StringToIntForStdIO();
                 switch (select) {
                 case 0:
@@ -217,7 +217,7 @@ void Controller::changeAvail() {
                 }
             } else {
                 std::cout << "このアカウントは無効化されています" << std::endl;
-                std::cout << "有効にしますか？(0:はい 1:いいえ)" << std::endl;
+                std::cout << "有効にしますか？(0:はい 1:いいえ)>";
                 auto select = StringToIntForStdIO();
                 switch (select) {
                 case 0:
