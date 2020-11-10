@@ -80,7 +80,7 @@ void MemoryUserDB::updateInternalDatabase(
     auto user = Memory[index].get();
     user->Name = name;
     // hashedPassが空文字でなければ、パスワードを変更
-    if (!(hashedPass.empty() || hashedPass.length() == 0)) {
+    if (!(hashedPass.empty())) {
         user->Pass = hashedPass;
     }
     user->Avail = avail;

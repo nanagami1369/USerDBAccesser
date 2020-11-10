@@ -20,7 +20,7 @@ void UserDB::checkNameValidation(const std::string name) {
 }
 
 void UserDB::checkPassWordValidation(const std::string rowPass) {
-    if (rowPass.empty() || rowPass[0] == '\n') {
+    if (rowPass.empty() || rowPass[0] == 0) {
         throw std::invalid_argument("Passが空文字かNullです");
     }
     if (rowPass.length() < 8) {

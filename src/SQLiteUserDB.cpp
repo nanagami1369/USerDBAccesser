@@ -81,7 +81,7 @@ void SQLiteUserDB::updateInternalDatabase(
     try {
         auto user = search(updateUserId);
         // hashedPassが空文字でなければ、パスワードを変更
-        if (hashedPass.empty() || hashedPass.length() == 0) {
+        if (hashedPass.empty()) {
             pass = user.Pass;
         } else {
             pass = hashedPass;
