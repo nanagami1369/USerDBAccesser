@@ -91,7 +91,7 @@ void UserDB::checkUpdateValidation(
     checkIdValidation(updateUserId);
     checkNameValidation(name);
     // rowPassが空文字の場合はパスワードを変更しないと判断
-    if (rowPass.empty() || rowPass.length() == 0) {
+    if (rowPass.empty()) {
         return;
     }
     checkPassWordValidation(rowPass);
