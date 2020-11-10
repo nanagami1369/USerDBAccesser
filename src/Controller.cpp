@@ -198,7 +198,7 @@ void Controller::changeAvail() {
                 switch (select) {
                 case 0:
                     try {
-                        db->update(user.ID, user.Name, user.Pass, false, user.Level);
+                        db->update(user.ID, user.Name, "", false, user.Level);
                     } catch (const std::range_error &e) {
                         std::cerr << "アカウントが見つかりませんでした" << std::endl;
                     } catch (const ValidationException &e) {
@@ -222,7 +222,7 @@ void Controller::changeAvail() {
                 switch (select) {
                 case 0:
                     try {
-                        db->update(user.ID, user.Name, user.Pass, true, user.Level);
+                        db->update(user.ID, user.Name, "", true, user.Level);
                     } catch (const std::range_error &e) {
                         std::cerr << "アカウントが見つかりませんでした" << std::endl;
                     } catch (const ValidationException &e) {
