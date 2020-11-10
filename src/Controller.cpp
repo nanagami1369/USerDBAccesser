@@ -36,7 +36,7 @@ std::string Controller::readName() {
     while (true) {
         std::cout << "名前を入力して下さい>";
         std::getline(std::cin, name);
-        if (name.empty() || name.length() == 0) {
+        if (name.empty() || name[0] == '\n') {
             std::cerr << "名前が空文字です" << std::endl;
         } else {
             return name;
@@ -59,7 +59,7 @@ std::string Controller::readPassward() {
         std::getline(std::cin, pass);
         tcsetattr(STDIN_FILENO, TCSANOW, &save);
         putchar('\n');
-        if (pass.empty() || pass.length() == 0) {
+        if (pass.empty() || pass[0] == '\n') {
             std::cerr << "パスワードが空文字です" << std::endl;
             continue;
         }
@@ -83,7 +83,7 @@ std::string Controller::readPassward() {
             std::getline(std::cin, confirmationPass);
             tcsetattr(STDIN_FILENO, TCSANOW, &save);
             putchar('\n');
-            if (confirmationPass.empty() || confirmationPass.length() == 0) {
+            if (confirmationPass.empty() || confirmationPass[0] == '\n') {
                 std::cerr << "パスワードが空文字です" << std::endl;
                 continue;
             }
@@ -148,7 +148,7 @@ void Controller::removeUser() {
     while (true) {
         std::cout << "IDを入力して下さい>";
         std::getline(std::cin, id);
-        if (id.empty() || id.length() == 0) {
+        if (id.empty() || id[0] == '\n') {
             std::cerr << "IDが空文字です" << std::endl;
             continue;
         }
@@ -190,7 +190,7 @@ void Controller::changeAvail() {
     while (true) {
         std::cout << "IDを入力して下さい>";
         std::getline(std::cin, id);
-        if (id.empty() || id.length() == 0) {
+        if (id.empty() || id[0] == '\n') {
             std::cerr << "IDが空文字です" << std::endl;
             continue;
         }

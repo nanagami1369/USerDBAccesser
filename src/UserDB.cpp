@@ -14,13 +14,13 @@ void UserDB::checkIdValidation(const std::string id) {
 }
 
 void UserDB::checkNameValidation(const std::string name) {
-    if (name.empty() || name.length() == 0) {
+    if (name.empty() || name[0] == '\n') {
         throw std::invalid_argument("Nameが空文字かNullです");
     }
 }
 
 void UserDB::checkPassWordValidation(const std::string rowPass) {
-    if (rowPass.empty() || rowPass.length() == 0) {
+    if (rowPass.empty() || rowPass[0] == '\n') {
         throw std::invalid_argument("Passが空文字かNullです");
     }
     if (rowPass.length() < 8) {
