@@ -99,7 +99,6 @@ void SQLiteUserDB::updateInternalDatabase(
               << " avail = " << (int)avail << ","
               << " level = " << (int)level
               << " WHERE id = " << updateUserId;
-        std::cout << query.str() << '\n';
         SQLite::Database db(dbName, SQLite::OPEN_READWRITE);
         db.exec(query.str());
     } catch (const std::range_error &e) {
