@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.10)
 project(UserDBAccesser VERSION 1.0.0)
-
+set(CMAKE_CXX_STANDARD 17)
 set(DB_TYPE "memory" CACHE STRING "ビルド時に使用するデータベースの種類を指定")
 message(STATUS "DB_TYPE : ${DB_TYPE}")
 message(STATUS "${CMAKE_CXX_FLAGS}")
