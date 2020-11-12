@@ -184,14 +184,15 @@ void Controller::start() {
     std::cout << "UserDBへようこそ!!" << std::endl;
 
     int controlNumber = 100;
+    constexpr int mainMenuLength = 5;
+    const char *mainManu[mainMenuLength] = {
+        "終了",
+        "ユーザーの追加",
+        "ユーザーの一覧",
+        "ユーザーの削除",
+        "ユーザーの無効化、有効化"};
     while (controlNumber != 0) {
-        std::cout << " 0:終了\n"
-                     " 1:ユーザーの追加\n"
-                     " 2:ユーザー一覧\n"
-                     " 3:ユーザー削除\n"
-                     " 4:ユーザーの無効化、有効化\n"
-                     "何をしますか？(数字でメニューを選択)>";
-        controlNumber = StringToIntForStdIO();
+        controlNumber = Prompt::selectMenuPrompt("何をしますか？", mainManu, mainMenuLength);
         switch (controlNumber) {
         case 0:
             std::cout << "さようなら!" << std::endl;
