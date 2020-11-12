@@ -9,6 +9,7 @@ set(USER_DB_ACCESSER_COMMON_SRC
  ${PROJECT_SOURCE_DIR}/src/User.cpp
  ${PROJECT_SOURCE_DIR}/src/t_Level.cpp
  ${PROJECT_SOURCE_DIR}/src/UserDB.cpp
+ ${PROJECT_SOURCE_DIR}/src/PromptModule.cpp
  ${PROJECT_SOURCE_DIR}/src/ValidationException.cpp
 )
 

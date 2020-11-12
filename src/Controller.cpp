@@ -1,4 +1,5 @@
 #include "Controller.h"
+#include "PromptModule.h"
 #include "UserDB.h"
 #include "ValidationException.h"
 #include <iostream>
@@ -29,104 +30,34 @@ Controller::~Controller() {
     delete db;
 }
 
-std::string Controller::readName() {
+void Controller::addUser() {
+    std::cout << "ユーザーを追加します" << std::endl;
+    // 名前入力
     std::string name = "";
     while (true) {
-        std::cout << "名前を入力して下さい>";
-        std::getline(std::cin, name);
-        if (name.empty() || name[0] == '\n') {
-            std::cerr << "名前が空文字です" << std::endl;
-        } else {
-            return name;
-        }
-    }
-}
-
-std::string Controller::readPassward() {
-    std::string pass = "";
-    std::string confirmationPass = "";
-    struct termios term;
-    struct termios save;
-    while (true) {
-        std::cout << "パスワードを入力して下さい>";
-        tcgetattr(STDIN_FILENO, &term);
-        save = term;
-        term.c_lflag &= ~ECHO;
-        // パスワード入力時はターミナルの応答を消す
-        tcsetattr(STDIN_FILENO, TCSANOW, &term);
-        std::getline(std::cin, pass);
-        tcsetattr(STDIN_FILENO, TCSANOW, &save);
-        putchar('\n');
-        if (pass.empty() || pass[0] == '\n') {
-            std::cerr << "パスワードが空文字です" << std::endl;
-            continue;
-        }
-        if (pass.length() < 8) {
-            std::cerr << "パスワードは8文字以上にしてください" << std::endl;
-            continue;
-        }
-        while (true) {
-            std::cout << "もう一度パスワードを入力して下さい>";
-            tcgetattr(STDIN_FILENO, &term);
-            save = term;
-            term.c_lflag &= ~ECHO;
-            // パスワード入力時はターミナルの応答を消す
-            tcsetattr(STDIN_FILENO, TCSANOW, &term);
-            std::getline(std::cin, confirmationPass);
-            tcsetattr(STDIN_FILENO, TCSANOW, &save);
-            putchar('\n');
-            if (confirmationPass.empty() || confirmationPass[0] == '\n') {
-                std::cerr << "パスワードが空文字です" << std::endl;
-                continue;
-            }
-            if (confirmationPass.length() < 8) {
-                std::cerr << "パスワードは8文字以上にしてください" << std::endl;
-                continue;
-            }
+        try {
+            name = Prompt::inputStringPrompt("名前を入力して下さい");
             break;
-        }
-        // パスワードが一致しなかった場合は、パスワードの入力をやり直す
-        if (pass != confirmationPass) {
-            std::cerr << "パスワードが一致しませんでした。" << std::endl;
-            continue;
-        }
-        break;
-    }
-    return pass;
-}
-
-bool Controller::readIsAvail() {
-    int availNumber;
-    while (true) {
-        std::cout << "無効な状態で作成しますか (0:有効 1:無効)>";
-        availNumber = StringToIntForStdIO();
-        if (availNumber != 0 && availNumber != 1) {
-            std::cerr << "無効な値が入力されました" << std::endl;
-        } else {
-            return availNumber == 0 ? true : false;
+        } catch (const std::invalid_argument &e) {
+            std::cerr << e.what() << std::endl;
         }
     }
-}
-
-t_Level Controller::readLevel() {
-    int LevelNumber;
-    while (true) {
-        std::cout << "権限を決めて下さい (0:ADMIN 1:PREM 2:GEN 3:TRY)>";
-        LevelNumber = StringToIntForStdIO();
-        t_Level level;
-        switch (LevelNumber) {
-        case 0:
-            return ADMIN;
-        case 1:
-            return PREM;
-        case 2:
-            return GEN;
-        case 3:
-            return TRY;
-        default:
-            std::cerr << "無効な値が入力されました" << std::endl;
-        }
-    }
+    // パスワード入力
+    std::string pass = Prompt::inputPasswordPrompt();
+    // 有効、無効
+    uint8_t availNumber;
+    constexpr int availMenuLength = 2;
+    const char *availMenu[availMenuLength] = {"有効", "無効"};
+    availNumber = Prompt::selectMenuPrompt("どの状態で作成しますか", availMenu, availMenuLength);
+    auto avail = availNumber == 0 ? true : false;
+    // 権限
+    uint8_t levelNumber;
+    constexpr int levelMenuLength = 4;
+    const char *levelMenu[levelMenuLength] = {"ADMIN", "PREM", "GEN", "TRY"};
+    levelNumber = Prompt::selectMenuPrompt("権限を決定して下さい", levelMenu, levelMenuLength);
+    auto level = intToT_Level(levelNumber);
+    db->add(name, pass, avail, level);
+    std::cout << "ユーザーの追加に成功しました" << std::endl;
 }
 
 void Controller::removeUser() {
@@ -261,22 +192,12 @@ void Controller::start() {
                      " 4:ユーザーの無効化、有効化\n"
                      "何をしますか？(数字でメニューを選択)>";
         controlNumber = StringToIntForStdIO();
-        std::string name = "";
-        std::string pass = "";
-        bool avail = "";
-        t_Level level = ADMIN;
         switch (controlNumber) {
         case 0:
             std::cout << "さようなら!" << std::endl;
             break;
         case 1:
-            std::cout << "ユーザーを追加します" << std::endl;
-            name = readName();
-            pass = readPassward();
-            avail = readIsAvail();
-            level = readLevel();
-            db->add(name, pass, avail, level);
-            std::cout << "ユーザーの追加に成功しました" << std::endl;
+            addUser();
             break;
         case 2:
             std::cout << "ユーザーの一覧を表示します" << std::endl;

@@ -4,10 +4,7 @@
 class Controller {
   private:
     UserDB *db;
-    std::string readName();
-    std::string readPassward();
-    bool readIsAvail();
-    t_Level readLevel();
+    void addUser();
     void removeUser();
     void changeAvail();
   public:
