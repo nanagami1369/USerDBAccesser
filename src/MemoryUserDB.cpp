@@ -95,6 +95,16 @@ void MemoryUserDB::WriterAllUserToConsole() {
 }
 
 MemoryUserDB::MemoryUserDB() {
-    this->add("田中", "12432511", true, ADMIN);
-    this->add("中田", "24332243", true, TRY);
+    this->add("テスト 田中", "12345678", true, t_Level::ADMIN);
+    this->add("テスト 中田", "12345678", false, t_Level::GEN);
+    this->add("テスト 明美", "12345678", true, t_Level::TRY);
+    this->add("テスト 未央", "12345678", true, t_Level::PREM);
+    this->add("テスト 太郎", "12345678", true, t_Level::ADMIN);
+    this->add("テスト 中島", "12345678", true, t_Level::GEN);
+    this->add("テスト 早川", "12345678", true, t_Level::TRY);
+    this->add("テスト マイケル", "12345678", true, t_Level::GEN);
+    this->add("テスト 長谷川", "12345678", false, t_Level::ADMIN);
+    this->add("テスト 岡本", "12345678", true, t_Level::PREM);
+    this->add("テスト 翔", "12345678", true, t_Level::PREM);
+    this->add("テスト 健", "12345678", true, t_Level::TRY);
 }
