@@ -56,7 +56,6 @@ uint8_t Prompt::selectMenuPrompt(const char *message, const char *menuItems[], c
     save = term;
     term.c_lflag &= ~ECHO;
     term.c_lflag &= ~ICANON;
-    // パスワード入力時はターミナルの応答を消す
     tcsetattr(STDIN_FILENO, TCSANOW, &term);
     char key = 0;
     while (true) {
