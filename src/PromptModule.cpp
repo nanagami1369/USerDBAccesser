@@ -71,6 +71,16 @@ uint8_t Prompt::selectMenuPrompt(const char *message, const char *menuItems[], c
             tcsetattr(STDIN_FILENO, TCSANOW, &save);
             return selectIndex;
         }
+        // 数字キーで項目があるならそこまで移動
+        if (48 <= key && key <= 57) {
+            uint8_t selectNumber = key - 48;
+            if (selectNumber < menuItemsLength) {
+                selectIndex = selectNumber;
+                std::printf("\r\e[%dA", menuItemsLength);
+                printSelectMenu(menuItems, menuItemsLength, selectIndex);
+            }
+        }
+
         //矢印キーで移動
         if (key == 27) {
             if (fgetc(stdin) == 91) {
