@@ -187,14 +187,14 @@ void Controller::start() {
 
     int controlNumber = 100;
     constexpr int mainMenuLength = 5;
-    const char *mainManu[mainMenuLength] = {
+    const char *mainMenu[mainMenuLength] = {
         "終了",
         "ユーザーの追加",
         "ユーザーの一覧",
         "ユーザーの削除",
         "ユーザーの無効化、有効化"};
     while (controlNumber != 0) {
-        controlNumber = Prompt::selectMenuPrompt("何をしますか？", mainManu, mainMenuLength);
+        controlNumber = Prompt::selectMenuPrompt("何をしますか？", mainMenu, mainMenuLength);
         switch (controlNumber) {
         case 0:
             std::cout << "さようなら!" << std::endl;
