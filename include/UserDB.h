@@ -1,3 +1,7 @@
+/**
+ * @file UserDB.h
+ * @brief ユーザーDBの基本となる実装をまとめた抽象クラス
+**/
 #pragma once
 #include "User.h"
 #include "t_level.h"
@@ -8,30 +12,30 @@
 class UserDB {
   private:
     /**
-     * checkNameValidation関数でハッシュ化方式の指定に使用
+     * @brief checkNameValidation関数でハッシュ化方式の指定に使用
      */
     static const char *SHA_512;
     /**
-     * Id用バリデーションチェックの標準実装
+     * @brief Id用バリデーションチェックの標準実装
      */
     virtual void checkIdValidation(const std::string id) final;
     /**
-     * 名前用バリデーションチェックの標準実装
+     * @brief 名前用バリデーションチェックの標準実装
      */
     virtual void checkNameValidation(const std::string name) final;
     /**
-     * パスワード用バリデーションチェックの標準実装
+     * @brief パスワード用バリデーションチェックの標準実装
      */
     virtual void checkPassWordValidation(const std::string rowPass) final;
     /**
-     * ハッシュ済みパスワードを作成する
+     * @brief ハッシュ済みパスワードを作成する
      */
     virtual std::string createHashPassWord(const std::string rowPass, const char *HashMode) final;
 
   protected:
     /**
-     * ユーザーの追加情報のバリデーション
-     * add関数から呼ばれる
+     * @brief ユーザーの追加情報のバリデーション
+     * @note add関数から呼ばれる
      */
     virtual void checkAddValidation(
         const std::string name,
@@ -39,8 +43,8 @@ class UserDB {
         const bool avail,
         const t_Level level);
     /**
-     * 内部データベースへの追加に使用
-     * add関数から呼ばれる
+     * @brief 内部データベースへの追加に使用
+     * @note add関数から呼ばれる
      */
     virtual void addInternalDatabase(
         const std::string name,
@@ -48,30 +52,30 @@ class UserDB {
         const bool avail,
         const t_Level level) = 0;
     /**
-     * ユーザーIDのバリデーション
-     * search関数から呼ばれる
+     * @brief ユーザーIDのバリデーション
+     * @note search関数から呼ばれる
      */
     virtual void checkSearchValidation(const std::string id);
     /**
-     * 内部データベースからの検索に使用
-     * search関数から呼ばれる
+     * @brief 内部データベースからの検索に使用
+     * @note search関数から呼ばれる
      */
     virtual User searchInternalDatabase(const std::string id) = 0;
     /**
-     * ユーザーIDのバリデーション
-     * remove関数から呼ばれる
+     * @brief ユーザーIDのバリデーション
+     * @note remove関数から呼ばれる
      */
     virtual void checkRemoveValidation(const std::string id);
     /**
-     * 内部データベースからの削除に使用
-     * remove関数から呼ばれる
+     * @brief 内部データベースからの削除に使用
+     * @note remove関数から呼ばれる
      */
     virtual void removeInternalDatabase(const std::string id) = 0;
     /**
-     * ユーザーの更新情報のバリデーション
-     * update関数から呼ばれる
-     * updateUserId:変更するアカウントのID(アカウントのIDは変更不可)
-     * rowPass:値が空文字の場合変更なしと判断、それ以外の場合は変更
+     * @brief ユーザーの更新情報のバリデーション
+     * @note update関数から呼ばれる
+     * @param updateUserId:変更するアカウントのID(アカウントのIDは変更不可)
+     * @param rowPass:値が空文字の場合変更なしと判断、それ以外の場合は変更
      *
      */
     virtual void checkUpdateValidation(
@@ -81,10 +85,10 @@ class UserDB {
         const bool avail,
         const t_Level level);
     /**
-     * 内部データベースへの更新に使用
-     * update関数から呼ばれる
-     * updateUserId:変更するアカウントのID(アカウントのIDは変更不可)
-     * hashedPass:値が空文字の場合変更なしと判断、それ以外の場合は変更すること
+     * @brief 内部データベースへの更新に使用
+     * @note update関数から呼ばれる
+     * @param updateUserId:変更するアカウントのID(アカウントのIDは変更不可)
+     * @param hashedPass:値が空文字の場合変更なしと判断、それ以外の場合は変更すること
      */
     virtual void updateInternalDatabase(
         const std::string updateUserId,
@@ -95,24 +99,24 @@ class UserDB {
 
   public:
     /**
-     * データベースへアカウントを追加
+     * @brief データベースへアカウントを追加
      */
     virtual void add(const std::string name,
                      const std::string rowPass,
                      const bool avail,
                      const t_Level level) final;
     /**
-     * データベースからアカウントを検索
+     * @brief データベースからアカウントを検索
      */
     virtual User search(const std::string id) final;
     /**
-     * データベースからアカウントを削除
+     * @brief データベースからアカウントを削除
      */
     virtual void remove(const std::string id) final;
     /**
-     * データベースのアカウントを更新
-     * updateUserId:変更するアカウントのID(アカウントのIDは変更不可)
-     * rowPass:値が空文字の場合変更なしと判断、それ以外の場合は変更
+     * @brief データベースのアカウントを更新
+     * @param updateUserId:変更するアカウントのID(アカウントのIDは変更不可)
+     * @param rowPass:値が空文字の場合変更なしと判断、それ以外の場合は変更
      */
     virtual void update(
         const std::string updateUserId,
@@ -121,7 +125,7 @@ class UserDB {
         const bool avail,
         const t_Level level) final;
     /**
-     * データベースのすべてのユーザー情報をコンソールへ出力
+     * @brief データベースのすべてのユーザー情報をコンソールへ出力
      */
     virtual void WriterAllUserToConsole() = 0;
     virtual ~UserDB() {}
