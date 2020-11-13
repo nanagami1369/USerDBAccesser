@@ -6,21 +6,6 @@
 #include <regex>
 #include <termios.h>
 #include <unistd.h>
-static int StringToIntForStdIO() {
-    auto number = -1;
-    std::string value = "";
-    getline(std::cin, value);
-    try {
-        number = std::stoi(value);
-    } catch (const std::invalid_argument e) {
-        std::cerr << "入力された値を数字に変換できませんでした" << std::endl;
-        return -1;
-    } catch (const std::out_of_range) {
-        //範囲外の数字として使用する側でエラーチェックするので何もしない
-        return -1;
-    }
-    return number;
-}
 
 Controller::Controller(UserDB *db) {
     this->db = db;
