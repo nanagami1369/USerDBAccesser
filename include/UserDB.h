@@ -128,5 +128,10 @@ class UserDB {
      * @brief データベースのすべてのユーザー情報をコンソールへ出力
      */
     virtual void WriterAllUserToConsole() = 0;
+    /**
+     * @brief 最後に追加されたアカウントのIdを返却する
+     * @return 最後に追加されたのId
+     */
+    virtual std::string GetLastId() = 0;
     virtual ~UserDB() {}
 };

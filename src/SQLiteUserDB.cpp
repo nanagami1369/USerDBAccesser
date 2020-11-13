@@ -1,3 +1,4 @@
+#include "SQLiteUserDB.h"
 #include "User.h"
 #include "UserDB.h"
 #include <SQLiteCpp/SQLiteCpp.h>
@@ -5,7 +6,6 @@
 #include <iostream>
 #include <sstream>
 #include <string>
-#include "SQLiteUserDB.h"
 
 void SQLiteUserDB::addInternalDatabase(
     const std::string name,
@@ -130,6 +130,23 @@ void SQLiteUserDB::WriterAllUserToConsole() {
         throw std::runtime_error(message.str());
     }
 }
+
+std::string SQLiteUserDB::GetLastId() {
+    try {
+        SQLite::Database db(dbName, SQLite::OPEN_READONLY);
+        SQLite::Statement query(db, "SELECT id FROM user ORDER BY id DESC LIMIT 1");
+        if (query.executeStep()) {
+            return query.getColumn(0);
+        } else {
+            throw std::range_error("アカウントが存在しません");
+        }
+    } catch (const SQLite::Exception &e) {
+        std::stringstream message;
+        message << "SQLiteでエラーが発生しました。: " << e.what();
+        throw std::runtime_error(message.str());
+    }
+}
+
 SQLiteUserDB::SQLiteUserDB() {
     try {
         SQLite::Database db("user.sqlite3", SQLite::OPEN_READWRITE | SQLite::OPEN_CREATE);

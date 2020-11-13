@@ -1,4 +1,4 @@
-#include <UserDB.h>
+#include "UserDB.h"
 #include <string>
 
 class SQLiteUserDB : public UserDB {
@@ -20,6 +20,6 @@ class SQLiteUserDB : public UserDB {
 
   public:
     void WriterAllUserToConsole() override;
-
+    std::string GetLastId() override;
     SQLiteUserDB();
 };

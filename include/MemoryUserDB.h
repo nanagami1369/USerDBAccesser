@@ -22,5 +22,6 @@ class MemoryUserDB : public UserDB {
 
   public:
     void WriterAllUserToConsole() override;
+    std::string GetLastId() override;
     MemoryUserDB();
 };

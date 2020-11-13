@@ -94,6 +94,14 @@ void MemoryUserDB::WriterAllUserToConsole() {
     }
 }
 
+std::string MemoryUserDB::GetLastId() {
+    if (Memory.size() == 0) {
+        throw std::range_error("アカウントが存在しません");
+    }
+
+    return Memory.back()->ID;
+}
+
 MemoryUserDB::MemoryUserDB() {
     this->add("テスト 田中", "12345678", true, t_Level::ADMIN);
     this->add("テスト 中田", "12345678", false, t_Level::GEN);
