@@ -63,13 +63,13 @@ void Controller::addUser() {
 void Controller::removeUser() {
     int id = -1;
     int lastId = -1;
+    try {
+        lastId = std::stoi(db->GetLastId());
+    } catch (const std::range_error &e) {
+        std::cerr << e.what() << std::endl;
+        return;
+    }
     while (true) {
-        try {
-            std::stoi(db->GetLastId());
-        } catch (const std::range_error &e) {
-            std::cerr << e.what() << std::endl;
-            return;
-        }
         try {
             id = Prompt::inputNumberPrompt("IDを入力して下さい", 0, lastId);
             break;
@@ -109,13 +109,13 @@ void Controller::removeUser() {
 void Controller::changeAvail() {
     int id = -1;
     int lastId = -1;
+    try {
+        lastId = std::stoi(db->GetLastId());
+    } catch (const std::range_error &e) {
+        std::cerr << e.what() << std::endl;
+        return;
+    }
     while (true) {
-        try {
-            std::stoi(db->GetLastId());
-        } catch (const std::range_error &e) {
-            std::cerr << e.what() << std::endl;
-            return;
-        }
         try {
             id = Prompt::inputNumberPrompt("IDを入力して下さい", 0, lastId);
             break;
