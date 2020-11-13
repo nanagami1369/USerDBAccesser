@@ -190,6 +190,7 @@ void Controller::start() {
         case 2:
             std::cout << "ユーザーの一覧を表示します" << std::endl;
             db->WriterAllUserToConsole();
+            Prompt::pausePrompt();
             break;
         case 3:
             removeUser();

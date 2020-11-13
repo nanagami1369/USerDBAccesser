@@ -52,4 +52,8 @@ uint8_t selectMenuPrompt(const char *message, const char *menuItems[], const int
  * @return ハッシュ化されてないパスワード
  */
 std::string inputPasswordPrompt();
+/** 
+ * @brief ユーザーがqキーを押すまで待機するプロンプト
+ */
+void pausePrompt();
 } // namespace Prompt

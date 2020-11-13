@@ -151,3 +151,21 @@ std::string Prompt::inputPasswordPrompt() {
     tcsetattr(STDIN_FILENO, TCSANOW, &save);
     return pass;
 }
+
+void Prompt::pausePrompt() {
+    std::printf("[q:終了]");
+    struct termios term;
+    struct termios save;
+    tcgetattr(STDIN_FILENO, &term);
+    save = term;
+    term.c_lflag &= ~ECHO;
+    term.c_lflag &= ~ICANON;
+    tcsetattr(STDIN_FILENO, TCSANOW, &term);
+    char key = 0;
+    //qキーが押されるまで待機
+    while (fgetc(stdin) != 113) {
+    }
+    std::printf("\r\e[K");
+    tcsetattr(STDIN_FILENO, TCSANOW, &save);
+    return;
+}
