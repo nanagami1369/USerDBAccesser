@@ -24,9 +24,9 @@ int Prompt::inputNumberPrompt(const char *message, const int minLength, const in
     try {
         number = std::stoi(value);
     } catch (const std::invalid_argument e) {
-        throw std::invalid_argument("入力された値を数字に変換できませんでした");
+        throw ValidationException("入力された値を数字に変換できませんでした");
     } catch (const std::out_of_range) {
-        throw std::out_of_range("有効数字の範囲外です");
+        throw ValidationException("有効数字の範囲外です");
     }
     if (minLength <= number && number <= maxLength) {
         return number;
