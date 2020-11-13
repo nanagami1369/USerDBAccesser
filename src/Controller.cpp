@@ -61,45 +61,47 @@ void Controller::addUser() {
 }
 
 void Controller::removeUser() {
-    std::string id = "";
+    int id = -1;
+    int lastId = -1;
     while (true) {
-        std::cout << "IDを入力して下さい>";
-        std::getline(std::cin, id);
-        if (id.empty() || id[0] == '\n') {
-            std::cerr << "IDが空文字です" << std::endl;
-            continue;
+        try {
+            std::stoi(db->GetLastId());
+        } catch (const std::range_error &e) {
+            std::cerr << e.what() << std::endl;
+            return;
         }
-        break;
+        try {
+            id = Prompt::inputNumberPrompt("IDを入力して下さい", 0, lastId);
+            break;
+        } catch (const ValidationException &e) {
+            std::cerr << e.what() << std::endl;
+        }
     }
     try {
-        auto user = this->db->search(id);
+        auto user = this->db->search(std::to_string(id));
+        constexpr int yesOrNoMenuLength = 2;
+        const char *yesOrNoMenu[yesOrNoMenuLength] = {"はい", "いいえ"};
         std::cout << "アカウントが見つかりました" << std::endl;
-        while (true) {
-            std::cout << "==================================" << std::endl;
-            std::cout << user.toString() << std::endl;
-            std::cout << "==================================" << std::endl;
-
-            std::cout << "このアカウントを削除します" << std::endl;
-            std::cout << "よろしいですか？ (0:はい 1:いいえ)>";
-            auto select = StringToIntForStdIO();
-            switch (select) {
-            case 0:
-                db->remove(user.ID);
-                std::cout << "アカウントを削除しました。" << std::endl;
-                return;
-            case 1:
-                std::cout << "アカウントを削除しませんでした" << std::endl;
-                return;
-            default:
-                std::cerr << "無効な数字です" << std::endl;
-                continue;
-            }
+        std::cout << "==================================" << std::endl;
+        std::cout << user.toString() << std::endl;
+        std::cout << "==================================" << std::endl;
+        std::cout << "このアカウントを削除します" << std::endl;
+        auto select = Prompt::selectMenuPrompt("よろしいですか？", yesOrNoMenu, yesOrNoMenuLength);
+        switch (select) {
+        case 0:
+            db->remove(user.ID);
+            std::cout << "アカウントを削除しました。" << std::endl;
+            return;
+        case 1:
+            std::cout << "アカウントを削除しませんでした" << std::endl;
+            return;
+        default:
+            //この値は出るはずが無いので何もしない
             break;
         }
-
     } catch (const ValidationException &e) {
         std::cerr << e.what() << std::endl;
-    } catch (const std::exception &e) {
+    } catch (const std::range_error &e) {
         std::cerr << e.what() << std::endl;
     }
 }
