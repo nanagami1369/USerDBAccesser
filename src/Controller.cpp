@@ -107,71 +107,71 @@ void Controller::removeUser() {
 }
 
 void Controller::changeAvail() {
-    std::string id;
+    int id = -1;
+    int lastId = -1;
     while (true) {
-        std::cout << "IDを入力して下さい>";
-        std::getline(std::cin, id);
-        if (id.empty() || id[0] == '\n') {
-            std::cerr << "IDが空文字です" << std::endl;
-            continue;
+        try {
+            std::stoi(db->GetLastId());
+        } catch (const std::range_error &e) {
+            std::cerr << e.what() << std::endl;
+            return;
         }
-        break;
+        try {
+            id = Prompt::inputNumberPrompt("IDを入力して下さい", 0, lastId);
+            break;
+        } catch (const ValidationException &e) {
+            std::cerr << e.what() << std::endl;
+        }
     }
     try {
-        auto user = db->search(id);
+        auto user = db->search(std::to_string(id));
+        constexpr int yesOrNoMenuLength = 2;
+        const char *yesOrNoMenu[yesOrNoMenuLength] = {"はい", "いいえ"};
         std::cout << "アカウントが見つかりました" << std::endl;
-        while (true) {
-            std::cout << "==================================" << std::endl;
-            std::cout << user.toString() << std::endl;
-            std::cout << "==================================" << std::endl;
-            if (user.Avail) {
-                std::cout << "このアカウントは有効です" << std::endl;
-                std::cout << "無効化しますか？(0:はい 1:いいえ)>";
-                auto select = StringToIntForStdIO();
-                switch (select) {
-                case 0:
-                    try {
-                        db->update(user.ID, user.Name, "", false, user.Level);
-                    } catch (const std::range_error &e) {
-                        std::cerr << "アカウントが見つかりませんでした" << std::endl;
-                    } catch (const ValidationException &e) {
-                        std::cerr << e.what() << std::endl;
-                    } catch (const std::exception &e) {
-                        std::cerr << e.what() << std::endl;
-                    }
-                    std::cout << "アカウントを無効化しました" << std::endl;
-                    return;
-                case 1:
-                    std::cout << "アカウントを無効化しませんでした" << std::endl;
-                    return;
-                default:
-                    std::cerr << "無効な数字です" << std::endl;
-                    continue;
+        std::cout << "==================================" << std::endl;
+        std::cout << user.toString() << std::endl;
+        std::cout << "==================================" << std::endl;
+        if (user.Avail) {
+            std::cout << "このアカウントは有効です" << std::endl;
+            auto select = Prompt::selectMenuPrompt("無効化しますか？", yesOrNoMenu, yesOrNoMenuLength);
+            switch (select) {
+            case 0:
+                try {
+                    db->update(user.ID, user.Name, "", false, user.Level);
+                } catch (const std::range_error &e) {
+                    std::cerr << "アカウントが見つかりませんでした" << std::endl;
+                } catch (const ValidationException &e) {
+                    std::cerr << e.what() << std::endl;
                 }
-            } else {
-                std::cout << "このアカウントは無効化されています" << std::endl;
-                std::cout << "有効にしますか？(0:はい 1:いいえ)>";
-                auto select = StringToIntForStdIO();
-                switch (select) {
-                case 0:
-                    try {
-                        db->update(user.ID, user.Name, "", true, user.Level);
-                    } catch (const std::range_error &e) {
-                        std::cerr << "アカウントが見つかりませんでした" << std::endl;
-                    } catch (const ValidationException &e) {
-                        std::cerr << e.what() << std::endl;
-                    } catch (const std::exception &e) {
-                        std::cerr << e.what() << std::endl;
-                    }
-                    std::cout << "アカウントを有効にしました" << std::endl;
-                    return;
-                case 1:
-                    std::cout << "アカウントを有効にしませんでした" << std::endl;
-                    return;
-                default:
-                    std::cerr << "無効な数字です" << std::endl;
-                    continue;
+                std::cout << "アカウントを無効化しました" << std::endl;
+                return;
+            case 1:
+                std::cout << "アカウントを無効化しませんでした" << std::endl;
+                return;
+            default:
+                //この値は出るはずが無いので何もしない
+                break;
+            }
+        } else {
+            std::cout << "このアカウントは無効化されています" << std::endl;
+            auto select = Prompt::selectMenuPrompt("有効にしますか？", yesOrNoMenu, yesOrNoMenuLength);
+            switch (select) {
+            case 0:
+                try {
+                    db->update(user.ID, user.Name, "", true, user.Level);
+                } catch (const std::range_error &e) {
+                    std::cerr << "アカウントが見つかりませんでした" << std::endl;
+                } catch (const ValidationException &e) {
+                    std::cerr << e.what() << std::endl;
                 }
+                std::cout << "アカウントを有効にしました" << std::endl;
+                return;
+            case 1:
+                std::cout << "アカウントを有効にしませんでした" << std::endl;
+                return;
+            default:
+                //この値は出るはずが無いので何もしない
+                break;
             }
         }
     } catch (const std::range_error &e) {
