@@ -15,6 +15,22 @@ Controller::~Controller() {
     delete db;
 }
 
+uint Controller::InputIdPrompt() {
+    uint lastId = -1;
+    try {
+        lastId = db->GetLastId();
+    } catch (const std::range_error &e) {
+        throw;
+    }
+    while (true) {
+        try {
+            return Prompt::inputNumberPrompt("IDを入力して下さい", 0, lastId);
+        } catch (const ValidationException &e) {
+            std::cerr << e.what() << std::endl;
+        }
+    }
+}
+
 void Controller::addUser() {
     std::cout << "ユーザーを追加します" << std::endl;
     // 名前入力
@@ -47,20 +63,11 @@ void Controller::addUser() {
 
 void Controller::removeUser() {
     uint id = -1;
-    uint lastId = -1;
     try {
-        lastId = db->GetLastId();
+        id = InputIdPrompt();
     } catch (const std::range_error &e) {
         std::cerr << e.what() << std::endl;
         return;
-    }
-    while (true) {
-        try {
-            id = Prompt::inputNumberPrompt("IDを入力して下さい", 0, lastId);
-            break;
-        } catch (const ValidationException &e) {
-            std::cerr << e.what() << std::endl;
-        }
     }
     try {
         auto user = this->db->search(id);
@@ -93,20 +100,11 @@ void Controller::removeUser() {
 
 void Controller::changeAvail() {
     uint id = -1;
-    uint lastId = -1;
     try {
-        lastId = db->GetLastId();
+        id = InputIdPrompt();
     } catch (const std::range_error &e) {
         std::cerr << e.what() << std::endl;
         return;
-    }
-    while (true) {
-        try {
-            id = Prompt::inputNumberPrompt("IDを入力して下さい", 0, lastId);
-            break;
-        } catch (const ValidationException &e) {
-            std::cerr << e.what() << std::endl;
-        }
     }
     try {
         auto user = db->search(id);

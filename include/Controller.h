@@ -4,9 +4,13 @@
 class Controller {
   private:
     UserDB *db;
+
+    uint InputIdPrompt();
+
     void addUser();
     void removeUser();
     void changeAvail();
+
   public:
     Controller(UserDB *db);
     ~Controller();
