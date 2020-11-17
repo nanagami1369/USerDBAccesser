@@ -31,7 +31,7 @@ int Prompt::inputNumberPrompt(const char *message, const int minLength, const in
     if (minLength <= number && number <= maxLength) {
         return number;
     }
-    throw std::out_of_range("有効数字の範囲外です");
+    throw ValidationException("有効数字の範囲外です");
 }
 
 static void printSelectMenu(const char *menuItems[], const int menuItemsLength, const uint8_t selectIndex) {
