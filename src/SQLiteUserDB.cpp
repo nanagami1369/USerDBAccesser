@@ -2,6 +2,7 @@
 #include "User.h"
 #include "UserDB.h"
 #include <SQLiteCpp/SQLiteCpp.h>
+#include <SQLiteCpp/VariadicBind.h>
 #include <exception>
 #include <iostream>
 #include <sstream>
@@ -16,14 +17,11 @@ void SQLiteUserDB::addInternalDatabase(
     const uint index = 0;
     auto user = new User(index, name, hashedPass, avail, level);
     try {
-        std::stringstream query;
-        query << "INSERT INTO user VALUES (NULL, '"
-              << user->Name << "', '"
-              << user->Pass << "', "
-              << (int)user->Avail << ", "
-              << (int)user->Level << ")";
+        const char *baseQuery = "INSERT INTO user VALUES ( NULL, ?, ?, ?, ?)";
         SQLite::Database db(dbName, SQLite::OPEN_READWRITE);
-        db.exec(query.str());
+        SQLite::Statement query(db, baseQuery);
+        SQLite::bind(query, user->Name, user->Pass, (int)user->Avail, (int)user->Level);
+        query.exec();
     } catch (const SQLite::Exception &e) {
         std::stringstream message;
         message << "SQLiteでエラーが発生しました。: " << e.what();
@@ -33,10 +31,10 @@ void SQLiteUserDB::addInternalDatabase(
 
 User SQLiteUserDB::searchByIdInternalDatabase(const uint id) {
     try {
-        std::stringstream queryString;
-        queryString << "SELECT * FROM user WHERE id=" << id << " LIMIT 1";
+        const char *baseQuery = "SELECT * FROM user WHERE id= ? LIMIT 1";
         SQLite::Database db(dbName, SQLite::OPEN_READWRITE);
-        SQLite::Statement query(db, queryString.str());
+        SQLite::Statement query(db, baseQuery);
+        SQLite::bind(query, id);
         if (query.executeStep()) {
             auto id = query.getColumn(0);
             auto name = query.getColumn(1);
@@ -56,10 +54,11 @@ User SQLiteUserDB::searchByIdInternalDatabase(const uint id) {
 
 std::vector<User> SQLiteUserDB::searchByNameInternalDatabase(const std::string name) {
     try {
-        std::stringstream queryString;
-        queryString << "SELECT * FROM user WHERE name LIKE '%" << name << "%'";
+        auto searchWord = "%" + name + "%";
+        const char *baseQuery = "SELECT * FROM user WHERE name LIKE ? ";
         SQLite::Database db(dbName, SQLite::OPEN_READWRITE);
-        SQLite::Statement query(db, queryString.str());
+        SQLite::Statement query(db, baseQuery);
+        SQLite::bind(query, searchWord);
         std::vector<User> searchedUsers;
         while (query.executeStep()) {
             auto id = query.getColumn(0);
@@ -82,11 +81,11 @@ std::vector<User> SQLiteUserDB::searchByNameInternalDatabase(const std::string n
 
 void SQLiteUserDB::removeInternalDatabase(const uint id) {
     try {
-        std::stringstream query;
-        query << "DELETE FROM user WHERE id=" << id;
+        const char *baseQuery = "DELETE FROM user WHERE id = ? ";
         SQLite::Database db(dbName, SQLite::OPEN_READWRITE);
-        std::cout << query.str() << std::endl;
-        db.exec(query.str());
+        SQLite::Statement query(db, baseQuery);
+        SQLite::bind(query, id);
+        query.exec();
     } catch (const SQLite::Exception &e) {
         std::stringstream message;
         message << "SQLiteでエラーが発生しました。: " << e.what();
@@ -116,16 +115,11 @@ void SQLiteUserDB::updateInternalDatabase(
         throw;
     }
     try {
-
-        std::stringstream query;
-        query << "UPDATE user SET"
-              << " name = '" << name << "',"
-              << " pass = '" << pass << "',"
-              << " avail = " << (int)avail << ","
-              << " level = " << (int)level
-              << " WHERE id = " << updateUserId;
+        const char *baseQuery = "UPDATE user SET name = ? , pass = ? , avail = ? , level = ? WHERE id = ?";
         SQLite::Database db(dbName, SQLite::OPEN_READWRITE);
-        db.exec(query.str());
+        SQLite::Statement query(db, baseQuery);
+        SQLite::bind(query, name, pass, (int)avail, (int)level, updateUserId);
+        query.exec();
     } catch (const std::range_error &e) {
         throw;
     } catch (const SQLite::Exception &e) {
