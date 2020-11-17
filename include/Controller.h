@@ -10,7 +10,7 @@ class Controller {
     void addUser();
     void removeUser();
     void changeAvail();
-
+    void searchUser();
   public:
     Controller(UserDB *db);
     ~Controller();

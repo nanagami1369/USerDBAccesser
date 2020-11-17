@@ -165,17 +165,44 @@ void Controller::changeAvail() {
     }
 }
 
+void Controller::searchUser() {
+    std::cout << "検索を開始します" << std::endl;
+    uint id = -1;
+    std::cout << "IDで検索します" << std::endl;
+    try {
+        id = InputIdPrompt();
+    } catch (const std::range_error &e) {
+        std::cerr << e.what() << std::endl;
+        return;
+    }
+    try {
+        auto user = db->searchById(id);
+        constexpr int yesOrNoMenuLength = 2;
+        const char *yesOrNoMenu[yesOrNoMenuLength] = {"はい", "いいえ"};
+        std::cout << "アカウントが見つかりました" << std::endl;
+        std::cout << "==================================" << std::endl;
+        std::cout << user.toString() << std::endl;
+        std::cout << "==================================" << std::endl;
+    } catch (const std::range_error &e) {
+        std::cerr << "アカウントが見つかりませんでした" << std::endl;
+        return;
+    } catch (const ValidationException &e) {
+        std::cerr << e.what() << std::endl;
+    }
+}
+
 void Controller::start() {
     std::cout << "UserDBへようこそ!!" << std::endl;
 
     int controlNumber = 100;
-    constexpr int mainMenuLength = 5;
+    constexpr int mainMenuLength = 6;
     const char *mainMenu[mainMenuLength] = {
         "終了",
         "ユーザーの追加",
         "ユーザーの一覧",
         "ユーザーの削除",
-        "ユーザーの無効化、有効化"};
+        "ユーザーの無効化、有効化",
+        "ユーザーの検索"};
     while (controlNumber != 0) {
         controlNumber = Prompt::selectMenuPrompt("何をしますか？", mainMenu, mainMenuLength);
         switch (controlNumber) {
@@ -195,6 +222,9 @@ void Controller::start() {
             break;
         case 4:
             changeAvail();
+            break;
+        case 5:
+            searchUser();
             break;
         default:
             std::cerr << "無効な数字です" << std::endl;
