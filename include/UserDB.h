@@ -18,7 +18,7 @@ class UserDB {
     /**
      * @brief Id用バリデーションチェックの標準実装
      */
-    virtual void checkIdValidation(const std::string id) final;
+    virtual void checkIdValidation(const uint id) final;
     /**
      * @brief 名前用バリデーションチェックの標準実装
      */
@@ -55,22 +55,22 @@ class UserDB {
      * @brief ユーザーIDのバリデーション
      * @note search関数から呼ばれる
      */
-    virtual void checkSearchValidation(const std::string id);
+    virtual void checkSearchValidation(const uint id);
     /**
      * @brief 内部データベースからの検索に使用
      * @note search関数から呼ばれる
      */
-    virtual User searchInternalDatabase(const std::string id) = 0;
+    virtual User searchInternalDatabase(const uint id) = 0;
     /**
      * @brief ユーザーIDのバリデーション
      * @note remove関数から呼ばれる
      */
-    virtual void checkRemoveValidation(const std::string id);
+    virtual void checkRemoveValidation(const uint id);
     /**
      * @brief 内部データベースからの削除に使用
      * @note remove関数から呼ばれる
      */
-    virtual void removeInternalDatabase(const std::string id) = 0;
+    virtual void removeInternalDatabase(const uint id) = 0;
     /**
      * @brief ユーザーの更新情報のバリデーション
      * @note update関数から呼ばれる
@@ -79,7 +79,7 @@ class UserDB {
      *
      */
     virtual void checkUpdateValidation(
-        const std::string updateUserId,
+        const uint updateUserId,
         const std::string name,
         const std::string rowPass,
         const bool avail,
@@ -91,7 +91,7 @@ class UserDB {
      * @param hashedPass:値が空文字の場合変更なしと判断、それ以外の場合は変更すること
      */
     virtual void updateInternalDatabase(
-        const std::string updateUserId,
+        const uint updateUserId,
         const std::string name,
         const std::string hashedPass,
         const bool avail,
@@ -108,18 +108,18 @@ class UserDB {
     /**
      * @brief データベースからアカウントを検索
      */
-    virtual User search(const std::string id) final;
+    virtual User search(const uint id) final;
     /**
      * @brief データベースからアカウントを削除
      */
-    virtual void remove(const std::string id) final;
+    virtual void remove(const uint id) final;
     /**
      * @brief データベースのアカウントを更新
      * @param updateUserId:変更するアカウントのID(アカウントのIDは変更不可)
      * @param rowPass:値が空文字の場合変更なしと判断、それ以外の場合は変更
      */
     virtual void update(
-        const std::string updateUserId,
+        const uint updateUserId,
         const std::string name,
         const std::string rowPass,
         const bool avail,
@@ -132,6 +132,6 @@ class UserDB {
      * @brief 最後に追加されたアカウントのIdを返却する
      * @return 最後に追加されたのId
      */
-    virtual std::string GetLastId() = 0;
+    virtual uint GetLastId() = 0;
     virtual ~UserDB() {}
 };

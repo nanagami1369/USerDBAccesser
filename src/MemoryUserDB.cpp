@@ -3,7 +3,7 @@
 #include "UserDB.h"
 #include <iostream>
 
-int MemoryUserDB::searchIndex(const std::string id) {
+int MemoryUserDB::searchIndex(const uint id) {
     int min = 0;
     int max = Memory.size() - 1;
     int mid;
@@ -26,12 +26,12 @@ void MemoryUserDB::addInternalDatabase(
     const std::string hashedPass,
     const bool avail,
     const t_Level level) {
-    auto user = new User(std::to_string(index), name, hashedPass, avail, level);
+    auto user = new User(index, name, hashedPass, avail, level);
     index++;
     std::shared_ptr<User> userShearPtr(user);
     Memory.push_back(userShearPtr);
 }
-User MemoryUserDB::searchInternalDatabase(const std::string id) {
+User MemoryUserDB::searchInternalDatabase(const uint id) {
     int min = 0;
     int max = Memory.size() - 1;
     int mid;
@@ -55,7 +55,7 @@ User MemoryUserDB::searchInternalDatabase(const std::string id) {
     throw std::range_error("アカウントが見つかりませんでした");
 }
 
-void MemoryUserDB::removeInternalDatabase(const std::string id) {
+void MemoryUserDB::removeInternalDatabase(const uint id) {
     try {
         auto index = searchIndex(id);
 
@@ -66,7 +66,7 @@ void MemoryUserDB::removeInternalDatabase(const std::string id) {
 }
 
 void MemoryUserDB::updateInternalDatabase(
-    const std::string updateUserId,
+    const uint updateUserId,
     const std::string name,
     const std::string hashedPass,
     const bool avail,
@@ -94,7 +94,7 @@ void MemoryUserDB::WriterAllUserToConsole() {
     }
 }
 
-std::string MemoryUserDB::GetLastId() {
+uint MemoryUserDB::GetLastId() {
     if (Memory.size() == 0) {
         throw std::range_error("アカウントが存在しません");
     }

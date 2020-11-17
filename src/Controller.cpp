@@ -46,10 +46,10 @@ void Controller::addUser() {
 }
 
 void Controller::removeUser() {
-    int id = -1;
-    int lastId = -1;
+    uint id = -1;
+    uint lastId = -1;
     try {
-        lastId = std::stoi(db->GetLastId());
+        lastId = db->GetLastId();
     } catch (const std::range_error &e) {
         std::cerr << e.what() << std::endl;
         return;
@@ -63,7 +63,7 @@ void Controller::removeUser() {
         }
     }
     try {
-        auto user = this->db->search(std::to_string(id));
+        auto user = this->db->search(id);
         constexpr int yesOrNoMenuLength = 2;
         const char *yesOrNoMenu[yesOrNoMenuLength] = {"はい", "いいえ"};
         std::cout << "アカウントが見つかりました" << std::endl;
@@ -92,10 +92,10 @@ void Controller::removeUser() {
 }
 
 void Controller::changeAvail() {
-    int id = -1;
-    int lastId = -1;
+    uint id = -1;
+    uint lastId = -1;
     try {
-        lastId = std::stoi(db->GetLastId());
+        lastId = db->GetLastId();
     } catch (const std::range_error &e) {
         std::cerr << e.what() << std::endl;
         return;
@@ -109,7 +109,7 @@ void Controller::changeAvail() {
         }
     }
     try {
-        auto user = db->search(std::to_string(id));
+        auto user = db->search(id);
         constexpr int yesOrNoMenuLength = 2;
         const char *yesOrNoMenu[yesOrNoMenuLength] = {"はい", "いいえ"};
         std::cout << "アカウントが見つかりました" << std::endl;

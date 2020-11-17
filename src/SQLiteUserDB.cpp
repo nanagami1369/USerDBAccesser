@@ -13,7 +13,7 @@ void SQLiteUserDB::addInternalDatabase(
     const bool avail,
     const t_Level level) {
     // indexは、SQliteから自動で割り当てられるので一旦0を入れる。
-    auto index = "0";
+    const uint index = 0;
     auto user = new User(index, name, hashedPass, avail, level);
     try {
         std::stringstream query;
@@ -31,11 +31,10 @@ void SQLiteUserDB::addInternalDatabase(
     }
 }
 
-User SQLiteUserDB::searchInternalDatabase(const std::string id) {
-    auto idNumber = std::stoi(id);
+User SQLiteUserDB::searchInternalDatabase(const uint id) {
     try {
         std::stringstream queryString;
-        queryString << "SELECT * FROM user WHERE id=" << idNumber << " LIMIT 1";
+        queryString << "SELECT * FROM user WHERE id=" << id << " LIMIT 1";
         SQLite::Database db(dbName, SQLite::OPEN_READWRITE);
         SQLite::Statement query(db, queryString.str());
         if (query.executeStep()) {
@@ -54,11 +53,10 @@ User SQLiteUserDB::searchInternalDatabase(const std::string id) {
         throw std::runtime_error(message.str());
     }
 }
-void SQLiteUserDB::removeInternalDatabase(const std::string id) {
-    auto idNumber = std::stoi(id);
+void SQLiteUserDB::removeInternalDatabase(const uint id) {
     try {
         std::stringstream query;
-        query << "DELETE FROM user WHERE id=" << idNumber;
+        query << "DELETE FROM user WHERE id=" << id;
         SQLite::Database db(dbName, SQLite::OPEN_READWRITE);
         std::cout << query.str() << std::endl;
         db.exec(query.str());
@@ -70,7 +68,7 @@ void SQLiteUserDB::removeInternalDatabase(const std::string id) {
 }
 
 void SQLiteUserDB::updateInternalDatabase(
-    const std::string updateUserId,
+    const uint updateUserId,
     const std::string name,
     const std::string hashedPass,
     const bool avail,
@@ -130,8 +128,7 @@ void SQLiteUserDB::WriterAllUserToConsole() {
         throw std::runtime_error(message.str());
     }
 }
-
-std::string SQLiteUserDB::GetLastId() {
+uint SQLiteUserDB::GetLastId() {
     try {
         SQLite::Database db(dbName, SQLite::OPEN_READONLY);
         SQLite::Statement query(db, "SELECT id FROM user ORDER BY id DESC LIMIT 1");

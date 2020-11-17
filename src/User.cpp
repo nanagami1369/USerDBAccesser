@@ -1,7 +1,7 @@
 #include "User.h"
 #include "t_level.h"
 #include <iostream>
-User::User(std::string id,
+User::User(uint id,
            std::string name,
            std::string pass,
            bool avail,
@@ -17,5 +17,5 @@ std::string User::toString() {
 
     auto avail = Avail ? "true" : "false";
     auto level = t_LevelToString(Level);
-    return ID + "|" + Name + "|" + pass + "|" + avail + "|" + level;
+    return std::to_string(ID) + "|" + Name + "|" + pass + "|" + avail + "|" + level;
 }

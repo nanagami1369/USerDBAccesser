@@ -3,12 +3,12 @@
 #include "t_level.h"
 class User {
   public:
-    std::string ID;
+    uint ID;
     std::string Name;
     std::string Pass;
     bool Avail;
     t_Level Level;
-    User(std::string id,
+    User(uint id,
          std::string name,
          std::string pass,
          bool avail,

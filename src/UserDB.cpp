@@ -1,17 +1,10 @@
 #include "UserDB.h"
-#include <crypt.h>
 #include "ValidationException.h"
+#include <crypt.h>
 const char *UserDB::SHA_512 = "$6$";
 
-void UserDB::checkIdValidation(const std::string id) {
-    try {
-        auto idNumber = std::stoi(id);
-    } catch (const std::invalid_argument) {
-        throw ValidationException("IDは数字のみです");
-
-    } catch (const std::out_of_range) {
-        throw ValidationException("IDの有効数字の範囲外です");
-    }
+void UserDB::checkIdValidation(const uint id) {
+    // 何もしない。必要になったら追加する。
 }
 
 void UserDB::checkNameValidation(const std::string name) {
@@ -64,26 +57,26 @@ void UserDB::add(
     addInternalDatabase(name, hashedPass, avail, level);
 }
 
-void UserDB::checkSearchValidation(const std::string id) {
+void UserDB::checkSearchValidation(const uint id) {
     checkIdValidation(id);
 }
 
-User UserDB::search(const std::string id) {
+User UserDB::search(const uint id) {
     checkSearchValidation(id);
     return searchInternalDatabase(id);
 }
 
-void UserDB::checkRemoveValidation(const std::string id) {
+void UserDB::checkRemoveValidation(const uint id) {
     checkIdValidation(id);
 }
 
-void UserDB::remove(const std::string id) {
+void UserDB::remove(const uint id) {
     checkRemoveValidation(id);
     removeInternalDatabase(id);
 }
 
 void UserDB::checkUpdateValidation(
-    const std::string updateUserId,
+    const uint updateUserId,
     const std::string name,
     const std::string rowPass,
     const bool avail,
@@ -98,7 +91,7 @@ void UserDB::checkUpdateValidation(
 }
 
 void UserDB::update(
-    const std::string updateUserId,
+    const uint updateUserId,
     const std::string name,
     const std::string rowPass,
     const bool avail,
