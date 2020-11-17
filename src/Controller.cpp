@@ -167,27 +167,63 @@ void Controller::changeAvail() {
 
 void Controller::searchUser() {
     std::cout << "検索を開始します" << std::endl;
+    constexpr int searchModeMenuLength = 2;
+    const char *searchModeMenu[searchModeMenuLength] = {
+        "IDで検索する",
+        "名前で検索する",
+    };
+    auto searchMode = Prompt::selectMenuPrompt("検索モードを指定して下さい", searchModeMenu, searchModeMenuLength);
     uint id = -1;
-    std::cout << "IDで検索します" << std::endl;
-    try {
-        id = InputIdPrompt();
-    } catch (const std::range_error &e) {
-        std::cerr << e.what() << std::endl;
-        return;
-    }
-    try {
-        auto user = db->searchById(id);
-        constexpr int yesOrNoMenuLength = 2;
-        const char *yesOrNoMenu[yesOrNoMenuLength] = {"はい", "いいえ"};
-        std::cout << "アカウントが見つかりました" << std::endl;
-        std::cout << "==================================" << std::endl;
-        std::cout << user.toString() << std::endl;
-        std::cout << "==================================" << std::endl;
-    } catch (const std::range_error &e) {
-        std::cerr << "アカウントが見つかりませんでした" << std::endl;
-        return;
-    } catch (const ValidationException &e) {
-        std::cerr << e.what() << std::endl;
+    std::string name = "";
+    switch (searchMode) {
+    case 0:
+        std::cout << "IDで検索します" << std::endl;
+        try {
+            id = InputIdPrompt();
+        } catch (const std::range_error &e) {
+            std::cerr << e.what() << std::endl;
+            return;
+        }
+        try {
+            auto user = db->searchById(id);
+            constexpr int yesOrNoMenuLength = 2;
+            const char *yesOrNoMenu[yesOrNoMenuLength] = {"はい", "いいえ"};
+            std::cout << "アカウントが見つかりました" << std::endl;
+            std::cout << "==================================" << std::endl;
+            std::cout << user.toString() << std::endl;
+            std::cout << "==================================" << std::endl;
+        } catch (const std::range_error &e) {
+            std::cerr << "アカウントが見つかりませんでした" << std::endl;
+            return;
+        } catch (const ValidationException &e) {
+            std::cerr << e.what() << std::endl;
+        }
+        break;
+    case 1:
+        std::cout << "名前で検索します" << std::endl;
+        while (true) {
+            try {
+                name = Prompt::inputStringPrompt("名前を入力して下さい");
+                break;
+            } catch (const ValidationException &e) {
+                std::cerr << e.what() << std::endl;
+            }
+        }
+        try {
+            auto users = db->searchByName(name);
+            std::cout << "アカウントが見つかりました" << std::endl;
+            std::cout << "==================================" << std::endl;
+            for (auto &user : users)
+            {
+                std::cout << user.toString() << std::endl;
+            }
+            std::cout << "==================================" << std::endl;
+        } catch (const std::range_error &e) {
+            std::cerr << "アカウントが見つかりませんでした" << std::endl;
+        }
+        break;
+    default:
+        break;
     }
 }
 

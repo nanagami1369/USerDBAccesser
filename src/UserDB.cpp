@@ -66,6 +66,15 @@ User UserDB::searchById(const uint id) {
     return searchByIdInternalDatabase(id);
 }
 
+void UserDB::checkSearchByNameValidation(const std::string name) {
+    checkNameValidation(name);
+}
+
+std::vector<User> UserDB::searchByName(const std::string name) {
+    checkSearchByNameValidation(name);
+    return searchByNameInternalDatabase(name);
+}
+
 void UserDB::checkRemoveValidation(const uint id) {
     checkIdValidation(id);
 }

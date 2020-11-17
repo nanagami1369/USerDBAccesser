@@ -2,6 +2,7 @@
 #include "User.h"
 #include "UserDB.h"
 #include <iostream>
+#include <regex>
 
 int MemoryUserDB::searchIndex(const uint id) {
     int min = 0;
@@ -53,6 +54,25 @@ User MemoryUserDB::searchByIdInternalDatabase(const uint id) {
         }
     }
     throw std::range_error("アカウントが見つかりませんでした");
+}
+std::vector<User> MemoryUserDB::searchByNameInternalDatabase(const std::string name) {
+    auto pattern = std::regex("^(?=.*" + name + ").*$");
+    std::vector<User> searchedUsers;
+    for (auto user : Memory) {
+        if (std::regex_match(user->Name, pattern)) {
+            searchedUsers.push_back(User(
+                user->ID,
+                user->Name,
+                user->Pass,
+                user->Avail,
+                user->Level));
+        }
+    }
+    if (searchedUsers.empty()) {
+        throw std::range_error("アカウントが見つかりませんでした");
+    }
+
+    return searchedUsers;
 }
 
 void MemoryUserDB::removeInternalDatabase(const uint id) {

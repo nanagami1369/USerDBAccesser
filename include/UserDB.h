@@ -62,6 +62,16 @@ class UserDB {
      */
     virtual User searchByIdInternalDatabase(const uint id) = 0;
     /**
+     * @brief ユーザー名のバリデーション
+     * @note searchByName関数から呼ばれる
+     */
+    virtual void checkSearchByNameValidation(const std::string name) final;
+    /**
+     * @brief 内部データベースからの検索に使用
+     * @note searchByName関数から呼ばれる
+     */
+    virtual std::vector<User> searchByNameInternalDatabase(const std::string name) = 0;
+    /**
      * @brief ユーザーIDのバリデーション
      * @note remove関数から呼ばれる
      */
@@ -106,9 +116,14 @@ class UserDB {
                      const bool avail,
                      const t_Level level) final;
     /**
-     * @brief データベースからアカウントを検索
+     * @brief データベースからIdでアカウントを検索
      */
     virtual User searchById(const uint id) final;
+    /**
+     * @brief データベースから名前でアカウントを検索
+     * @note 部分一致で検索
+     */
+    virtual std::vector<User> searchByName(const std::string name) final;
     /**
      * @brief データベースからアカウントを削除
      */
