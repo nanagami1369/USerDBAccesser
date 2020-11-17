@@ -39,7 +39,7 @@ void Controller::addUser() {
         try {
             name = Prompt::inputStringPrompt("名前を入力して下さい");
             break;
-        } catch (const std::invalid_argument &e) {
+        } catch (const ValidationException &e) {
             std::cerr << e.what() << std::endl;
         }
     }
