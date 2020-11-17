@@ -70,7 +70,7 @@ void Controller::removeUser() {
         return;
     }
     try {
-        auto user = this->db->search(id);
+        auto user = this->db->searchById(id);
         constexpr int yesOrNoMenuLength = 2;
         const char *yesOrNoMenu[yesOrNoMenuLength] = {"はい", "いいえ"};
         std::cout << "アカウントが見つかりました" << std::endl;
@@ -107,7 +107,7 @@ void Controller::changeAvail() {
         return;
     }
     try {
-        auto user = db->search(id);
+        auto user = db->searchById(id);
         constexpr int yesOrNoMenuLength = 2;
         const char *yesOrNoMenu[yesOrNoMenuLength] = {"はい", "いいえ"};
         std::cout << "アカウントが見つかりました" << std::endl;

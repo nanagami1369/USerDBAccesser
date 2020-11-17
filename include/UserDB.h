@@ -53,14 +53,14 @@ class UserDB {
         const t_Level level) = 0;
     /**
      * @brief ユーザーIDのバリデーション
-     * @note search関数から呼ばれる
+     * @note searchById関数から呼ばれる
      */
-    virtual void checkSearchValidation(const uint id);
+    virtual void checkSearchByIdValidation(const uint id);
     /**
      * @brief 内部データベースからの検索に使用
-     * @note search関数から呼ばれる
+     * @note searchById関数から呼ばれる
      */
-    virtual User searchInternalDatabase(const uint id) = 0;
+    virtual User searchByIdInternalDatabase(const uint id) = 0;
     /**
      * @brief ユーザーIDのバリデーション
      * @note remove関数から呼ばれる
@@ -108,7 +108,7 @@ class UserDB {
     /**
      * @brief データベースからアカウントを検索
      */
-    virtual User search(const uint id) final;
+    virtual User searchById(const uint id) final;
     /**
      * @brief データベースからアカウントを削除
      */

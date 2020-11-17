@@ -31,7 +31,7 @@ void SQLiteUserDB::addInternalDatabase(
     }
 }
 
-User SQLiteUserDB::searchInternalDatabase(const uint id) {
+User SQLiteUserDB::searchByIdInternalDatabase(const uint id) {
     try {
         std::stringstream queryString;
         queryString << "SELECT * FROM user WHERE id=" << id << " LIMIT 1";
@@ -77,7 +77,7 @@ void SQLiteUserDB::updateInternalDatabase(
 
     // アカウントがなければ、例外を返却
     try {
-        auto user = search(updateUserId);
+        auto user = searchById(updateUserId);
         // hashedPassが空文字でなければ、パスワードを変更
         if (hashedPass.empty()) {
             pass = user.Pass;

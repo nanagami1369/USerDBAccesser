@@ -31,7 +31,7 @@ void MemoryUserDB::addInternalDatabase(
     std::shared_ptr<User> userShearPtr(user);
     Memory.push_back(userShearPtr);
 }
-User MemoryUserDB::searchInternalDatabase(const uint id) {
+User MemoryUserDB::searchByIdInternalDatabase(const uint id) {
     int min = 0;
     int max = Memory.size() - 1;
     int mid;

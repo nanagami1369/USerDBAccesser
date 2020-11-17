@@ -9,7 +9,7 @@ class SQLiteUserDB : public UserDB {
         const std::string hashedPass,
         const bool avail,
         const t_Level level) override;
-    User searchInternalDatabase(const uint id) override;
+    User searchByIdInternalDatabase(const uint id) override;
     void removeInternalDatabase(const uint id) override;
     void updateInternalDatabase(
         const uint updateUserId,

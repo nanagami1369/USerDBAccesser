@@ -57,13 +57,13 @@ void UserDB::add(
     addInternalDatabase(name, hashedPass, avail, level);
 }
 
-void UserDB::checkSearchValidation(const uint id) {
+void UserDB::checkSearchByIdValidation(const uint id) {
     checkIdValidation(id);
 }
 
-User UserDB::search(const uint id) {
-    checkSearchValidation(id);
-    return searchInternalDatabase(id);
+User UserDB::searchById(const uint id) {
+    checkSearchByIdValidation(id);
+    return searchByIdInternalDatabase(id);
 }
 
 void UserDB::checkRemoveValidation(const uint id) {
