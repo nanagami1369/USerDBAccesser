@@ -11,6 +11,10 @@ class Controller {
     void removeUser();
     void changeAvail();
     void searchUser();
+
+    void searchUserById();
+    void searchUserByName();
+
   public:
     Controller(UserDB *db);
     ~Controller();
