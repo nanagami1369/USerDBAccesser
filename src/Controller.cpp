@@ -167,11 +167,11 @@ void Controller::changeAvail() {
 
 void Controller::searchUser() {
     std::cout << "検索を開始します" << std::endl;
-    constexpr int searchModeMenuLength = 2;
+    constexpr int searchModeMenuLength = 3;
     const char *searchModeMenu[searchModeMenuLength] = {
         "IDで検索する",
         "名前で検索する",
-    };
+        "アカウントの状態で検索する"};
     auto searchMode = Prompt::selectMenuPrompt("検索モードを指定して下さい", searchModeMenu, searchModeMenuLength);
     switch (searchMode) {
     case 0:
@@ -179,6 +179,9 @@ void Controller::searchUser() {
         break;
     case 1:
         searchUserByName();
+        break;
+    case 2:
+        searchUserByAvail();
         break;
     default:
         break;
@@ -233,7 +236,29 @@ void Controller::searchUserByName() {
         std::cerr << "アカウントが見つかりませんでした" << std::endl;
     }
 }
-
+void Controller::searchUserByAvail() {
+    std::cout << "アカウントの状態で検索します" << std::endl;
+    constexpr int searchAvailModeMenuLength = 2;
+    const char *searchAvailModeMenu[searchAvailModeMenuLength] = {"有効", "無効"};
+    auto searchAvailModeNumber = Prompt::selectMenuPrompt("どちらの状態を検索しますか？", searchAvailModeMenu, searchAvailModeMenuLength);
+    auto searchAvailMode = searchAvailModeNumber == 0 ? true : false;
+    if (searchAvailMode) {
+        std::cout << "有効なアカウントを検索します" << std::endl;
+    } else {
+        std::cout << "無効なアカウントを検索します" << std::endl;
+    }
+    try {
+        auto users = db->searchByAvail(searchAvailMode);
+        std::cout << "アカウントが見つかりました" << std::endl;
+        std::cout << "==================================" << std::endl;
+        for (auto &user : users) {
+            std::cout << user.toString() << std::endl;
+        }
+        std::cout << "==================================" << std::endl;
+    } catch (const std::range_error &e) {
+        std::cerr << "アカウントが見つかりませんでした" << std::endl;
+    }
+}
 void Controller::start() {
     std::cout << "UserDBへようこそ!!" << std::endl;
 

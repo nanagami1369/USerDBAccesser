@@ -79,6 +79,32 @@ std::vector<User> SQLiteUserDB::searchByNameInternalDatabase(const std::string n
     }
 }
 
+std::vector<User> SQLiteUserDB::searchByAvailInternalDatabase(const bool avail) {
+    try {
+        const char *baseQuery = "SELECT * FROM user WHERE avail = ? ";
+        SQLite::Database db(dbName, SQLite::OPEN_READWRITE);
+        SQLite::Statement query(db, baseQuery);
+        SQLite::bind(query, (int)avail);
+        std::vector<User> searchedUsers;
+        while (query.executeStep()) {
+            auto id = query.getColumn(0);
+            auto name = query.getColumn(1);
+            auto pass = query.getColumn(2);
+            auto avail = query.getColumn(3).getInt() == 1 ? true : false;
+            auto level = intToT_Level(query.getColumn(4));
+            searchedUsers.push_back(User(id, name, pass, avail, level));
+        }
+        if (searchedUsers.empty()) {
+            throw std::range_error("アカウントが見つかりませんでした");
+        }
+        return searchedUsers;
+    } catch (const SQLite::Exception &e) {
+        std::stringstream message;
+        message << "SQLiteでエラーが発生しました。: " << e.what();
+        throw std::runtime_error(message.str());
+    }
+}
+
 void SQLiteUserDB::removeInternalDatabase(const uint id) {
     try {
         const char *baseQuery = "DELETE FROM user WHERE id = ? ";

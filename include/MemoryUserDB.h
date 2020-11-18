@@ -13,6 +13,7 @@ class MemoryUserDB : public UserDB {
         const t_Level level) override;
     User searchByIdInternalDatabase(const uint id) override;
     std::vector<User> searchByNameInternalDatabase(const std::string name) override;
+    std::vector<User> searchByAvailInternalDatabase(const bool avail) override;
     void removeInternalDatabase(const uint id) override;
     void updateInternalDatabase(
         const uint updateUserId,

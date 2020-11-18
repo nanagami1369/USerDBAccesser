@@ -75,6 +75,10 @@ std::vector<User> UserDB::searchByName(const std::string name) {
     return searchByNameInternalDatabase(name);
 }
 
+std::vector<User> UserDB::searchByAvail(const bool avail) {
+    return searchByAvailInternalDatabase(avail);
+}
+
 void UserDB::checkRemoveValidation(const uint id) {
     checkIdValidation(id);
 }

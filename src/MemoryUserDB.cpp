@@ -75,6 +75,24 @@ std::vector<User> MemoryUserDB::searchByNameInternalDatabase(const std::string n
     return searchedUsers;
 }
 
+std::vector<User> MemoryUserDB::searchByAvailInternalDatabase(const bool avail) {
+    std::vector<User> searchedUsers;
+    for (auto user : Memory) {
+        if (user->Avail == avail) {
+            searchedUsers.push_back(User(
+                user->ID,
+                user->Name,
+                user->Pass,
+                user->Avail,
+                user->Level));
+        }
+    }
+    if (searchedUsers.empty()) {
+        throw std::range_error("アカウントが見つかりませんでした");
+    }
+    return searchedUsers;
+}
+
 void MemoryUserDB::removeInternalDatabase(const uint id) {
     try {
         auto index = searchIndex(id);
