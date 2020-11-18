@@ -77,6 +77,11 @@ class UserDB {
      */
     virtual std::vector<User> searchByAvailInternalDatabase(const bool avail) = 0;
     /**
+     * @brief 内部データベースからの検索に使用
+     * @note searchByLevel関数から呼ばれる
+     */
+    virtual std::vector<User> searchByLevelInternalDatabase(const t_Level level) = 0;
+    /**
      * @brief ユーザーIDのバリデーション
      * @note remove関数から呼ばれる
      */
@@ -133,6 +138,10 @@ class UserDB {
      * @brief データベースからアカウントが有効か、無効かでアカウントを検索
      */
     virtual std::vector<User> searchByAvail(const bool avail) final;
+    /**
+     * @brief データベースからレベルで検索
+     */
+    virtual std::vector<User> searchByLevel(const t_Level level) final;
     /**
      * @brief データベースからアカウントを削除
      */

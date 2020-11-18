@@ -167,11 +167,12 @@ void Controller::changeAvail() {
 
 void Controller::searchUser() {
     std::cout << "検索を開始します" << std::endl;
-    constexpr int searchModeMenuLength = 3;
+    constexpr int searchModeMenuLength = 4;
     const char *searchModeMenu[searchModeMenuLength] = {
         "IDで検索する",
         "名前で検索する",
-        "アカウントの状態で検索する"};
+        "アカウントの状態で検索する",
+        "権限で検索する"};
     auto searchMode = Prompt::selectMenuPrompt("検索モードを指定して下さい", searchModeMenu, searchModeMenuLength);
     switch (searchMode) {
     case 0:
@@ -182,6 +183,9 @@ void Controller::searchUser() {
         break;
     case 2:
         searchUserByAvail();
+        break;
+    case 3:
+        searchUserByLevel();
         break;
     default:
         break;
@@ -259,6 +263,27 @@ void Controller::searchUserByAvail() {
         std::cerr << "アカウントが見つかりませんでした" << std::endl;
     }
 }
+
+void Controller::searchUserByLevel() {
+    std::cout << "権限で検索します" << std::endl;
+    constexpr int searchLevelModeMenuLength = 4;
+    const char *searchLevelModeMenu[searchLevelModeMenuLength] = {"ADMIN", "PREM", "GEN", "TRY"};
+    auto searchLevel = Prompt::selectMenuPrompt("どちらの状態を検索しますか？", searchLevelModeMenu, searchLevelModeMenuLength);
+    auto level = intToT_Level(searchLevel);
+    std::cout << "この権限を持つアカウントを検索します-->" << t_LevelToString(level) << std::endl;
+    try {
+        auto users = db->searchByLevel(level);
+        std::cout << "アカウントが見つかりました" << std::endl;
+        std::cout << "==================================" << std::endl;
+        for (auto &user : users) {
+            std::cout << user.toString() << std::endl;
+        }
+        std::cout << "==================================" << std::endl;
+    } catch (const std::range_error &e) {
+        std::cerr << "アカウントが見つかりませんでした" << std::endl;
+    }
+}
+
 void Controller::start() {
     std::cout << "UserDBへようこそ!!" << std::endl;
 

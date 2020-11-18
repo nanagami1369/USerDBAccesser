@@ -15,6 +15,7 @@ class Controller {
     void searchUserById();
     void searchUserByName();
     void searchUserByAvail();
+    void searchUserByLevel();
 
   public:
     Controller(UserDB *db);

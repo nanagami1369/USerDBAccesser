@@ -79,6 +79,10 @@ std::vector<User> UserDB::searchByAvail(const bool avail) {
     return searchByAvailInternalDatabase(avail);
 }
 
+std::vector<User> UserDB::searchByLevel(const t_Level level) {
+    return searchByLevelInternalDatabase(level);
+}
+
 void UserDB::checkRemoveValidation(const uint id) {
     checkIdValidation(id);
 }

@@ -12,6 +12,7 @@ class SQLiteUserDB : public UserDB {
     User searchByIdInternalDatabase(const uint id) override;
     std::vector<User> searchByNameInternalDatabase(const std::string name) override;
     std::vector<User> searchByAvailInternalDatabase(const bool avail) override;
+    std::vector<User> searchByLevelInternalDatabase(const t_Level level) override;
     void removeInternalDatabase(const uint id) override;
     void updateInternalDatabase(
         const uint updateUserId,
