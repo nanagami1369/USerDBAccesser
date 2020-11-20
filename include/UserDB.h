@@ -21,14 +21,18 @@ class UserDB {
     virtual void checkIdValidation(const uint id) final;
     /**
      * @brief 名前用バリデーションチェックの標準実装
+     * @attention 名前が空文字なら ValidationException を出す
      */
     virtual void checkNameValidation(const std::string name) final;
     /**
      * @brief パスワード用バリデーションチェックの標準実装
+     * @attention パスワードが空文字なら ValidationException を出す
+     * @attention パスワードが8文字未満ならValidationException を出す
      */
     virtual void checkPassWordValidation(const std::string rowPass) final;
     /**
      * @brief ハッシュ済みパスワードを作成する
+     * @attention パスワードの生成に失敗すると runtime_error を出す
      */
     virtual std::string createHashPassWord(const std::string rowPass, const char *HashMode) final;
 
@@ -46,11 +50,11 @@ class UserDB {
      * @brief 内部データベースへの追加に使用
      * @note add関数から呼ばれる
      */
-    virtual void addInternalDatabase(
-        const std::string name,
-        const std::string hashedPass,
-        const bool avail,
-        const t_Level level) = 0;
+        virtual void addInternalDatabase(
+            const std::string name,
+            const std::string hashedPass,
+            const bool avail,
+            const t_Level level) = 0;
     /**
      * @brief ユーザーIDのバリデーション
      * @note searchById関数から呼ばれる
