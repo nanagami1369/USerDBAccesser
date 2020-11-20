@@ -8,7 +8,9 @@
 #include <memory>
 #include <string>
 #include <vector>
-
+/**
+ * @brief ユーザーDBの基本となる実装をまとめた抽象クラス
+ */
 class UserDB {
   private:
     /**
