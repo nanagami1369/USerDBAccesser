@@ -72,25 +72,18 @@ void Controller::removeUser() {
     try {
         auto user = this->db->searchById(id);
         constexpr int yesOrNoMenuLength = 2;
-        const char *yesOrNoMenu[yesOrNoMenuLength] = {"はい", "いいえ"};
+        const char *yesOrNoMenu[yesOrNoMenuLength] = {"削除する", "いいえ"};
         std::cout << "アカウントが見つかりました" << std::endl;
         std::cout << "==================================" << std::endl;
         std::cout << user.toString() << std::endl;
         std::cout << "==================================" << std::endl;
-        std::cout << "このアカウントを削除します" << std::endl;
-        auto select = Prompt::selectMenuPrompt("よろしいですか？", yesOrNoMenu, yesOrNoMenuLength);
-        switch (select) {
-        case 0:
+        auto select = Prompt::yesOrNoPrompt("このアカウントを削除しますか？", yesOrNoMenu);
+        if (select) {
             db->remove(user.ID);
             std::cout << "アカウントを削除しました。" << std::endl;
             return;
-        case 1:
-            std::cout << "アカウントを削除しませんでした" << std::endl;
-            return;
-        default:
-            //この値は出るはずが無いので何もしない
-            break;
         }
+        std::cout << "アカウントを削除しませんでした" << std::endl;
     } catch (const ValidationException &e) {
         std::cerr << e.what() << std::endl;
     } catch (const std::range_error &e) {
@@ -108,17 +101,15 @@ void Controller::changeAvail() {
     }
     try {
         auto user = db->searchById(id);
-        constexpr int yesOrNoMenuLength = 2;
-        const char *yesOrNoMenu[yesOrNoMenuLength] = {"はい", "いいえ"};
         std::cout << "アカウントが見つかりました" << std::endl;
         std::cout << "==================================" << std::endl;
         std::cout << user.toString() << std::endl;
         std::cout << "==================================" << std::endl;
         if (user.Avail) {
             std::cout << "このアカウントは有効です" << std::endl;
-            auto select = Prompt::selectMenuPrompt("無効化しますか？", yesOrNoMenu, yesOrNoMenuLength);
-            switch (select) {
-            case 0:
+            const char *unEnableYesOrNoMenu[] = {"無効化する", "いいえ"};
+            auto select = Prompt::yesOrNoPrompt("無効化しますか？", unEnableYesOrNoMenu);
+            if (select) {
                 try {
                     db->update(user.ID, user.Name, "", false, user.Level);
                 } catch (const std::range_error &e) {
@@ -128,18 +119,13 @@ void Controller::changeAvail() {
                 }
                 std::cout << "アカウントを無効化しました" << std::endl;
                 return;
-            case 1:
-                std::cout << "アカウントを無効化しませんでした" << std::endl;
-                return;
-            default:
-                //この値は出るはずが無いので何もしない
-                break;
             }
+            std::cout << "アカウントを無効化しませんでした" << std::endl;
         } else {
             std::cout << "このアカウントは無効化されています" << std::endl;
-            auto select = Prompt::selectMenuPrompt("有効にしますか？", yesOrNoMenu, yesOrNoMenuLength);
-            switch (select) {
-            case 0:
+            const char *enableYesOrNoMenu[] = {"有効にする", "いいえ"};
+            auto select = Prompt::yesOrNoPrompt("有効にしますか？", enableYesOrNoMenu);
+            if (select) {
                 try {
                     db->update(user.ID, user.Name, "", true, user.Level);
                 } catch (const std::range_error &e) {
@@ -149,13 +135,8 @@ void Controller::changeAvail() {
                 }
                 std::cout << "アカウントを有効にしました" << std::endl;
                 return;
-            case 1:
-                std::cout << "アカウントを有効にしませんでした" << std::endl;
-                return;
-            default:
-                //この値は出るはずが無いので何もしない
-                break;
             }
+            std::cout << "アカウントを有効にしませんでした" << std::endl;
         }
     } catch (const std::range_error &e) {
         std::cerr << "アカウントが見つかりませんでした" << std::endl;
