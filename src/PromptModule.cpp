@@ -68,6 +68,7 @@ uint8_t Prompt::selectMenuPrompt(const char *message, const char *menuItems[], c
             }
             std::printf("\r\e[%dA", menuItemsLength);
             tcsetattr(STDIN_FILENO, TCSANOW, &save);
+            std::printf("\e[3%dm✓ \e[m%sが選択されました\n", PromptColor::GREEN, menuItems[selectIndex]);
             return selectIndex;
         }
         // 数字キーで項目があるならそこまで移動
