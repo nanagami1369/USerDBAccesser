@@ -1,7 +1,7 @@
 /**
  * @file UserDB.h
  * @brief ユーザーDBの基本となる実装をまとめた抽象クラス
-**/
+ */
 #pragma once
 #include "User.h"
 #include "t_level.h"
@@ -50,11 +50,11 @@ class UserDB {
      * @brief 内部データベースへの追加に使用
      * @note add関数から呼ばれる
      */
-        virtual void addInternalDatabase(
-            const std::string name,
-            const std::string hashedPass,
-            const bool avail,
-            const t_Level level) = 0;
+    virtual void addInternalDatabase(
+        const std::string name,
+        const std::string hashedPass,
+        const bool avail,
+        const t_Level level) = 0;
     /**
      * @brief ユーザーIDのバリデーション
      * @note searchById関数から呼ばれる

@@ -1,7 +1,7 @@
 /**
  * @file PromptModule.h
  * @brief プロントをまとめたモジュール
-**/
+ */
 #include <stdint.h>
 #include <string>
 /**
