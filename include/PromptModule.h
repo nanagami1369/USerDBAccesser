@@ -1,9 +1,12 @@
 /**
  * @file PromptModule.h
- * @brief 標準入力からデータを取得する
+ * @brief プロントをまとめたモジュール
 **/
 #include <stdint.h>
 #include <string>
+/**
+ * @brief プロントを表示する関数をまとめている
+ */
 namespace Prompt {
 
 /**
@@ -52,7 +55,7 @@ uint8_t selectMenuPrompt(const char *message, const char *menuItems[], const int
  * @return ハッシュ化されてないパスワード
  */
 std::string inputPasswordPrompt();
-/** 
+/**
  * @brief ユーザーがqキーを押すまで待機するプロンプト
  */
 void pausePrompt();
