@@ -153,6 +153,15 @@ std::string Prompt::inputPasswordPrompt() {
     return pass;
 }
 
+bool Prompt::yesOrNoPrompt(const char *message, const char *yesOrNoMenu[]) {
+    constexpr int yesOrNoMenuLength = 2;
+    auto selectIndex = selectMenuPrompt(message, yesOrNoMenu, yesOrNoMenuLength);
+    if (selectIndex == 0) {
+        return true;
+    }
+    return false;
+}
+
 void Prompt::pausePrompt() {
     std::printf("[q:終了]");
     struct termios term;

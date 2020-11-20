@@ -55,6 +55,15 @@ uint8_t selectMenuPrompt(const char *message, const char *menuItems[], const int
  * @return ハッシュ化されてないパスワード
  */
 std::string inputPasswordPrompt();
+
+/**
+ * @brief 肯定か否定をユーザーに選んで貰うプロンプト
+ * @note ↑キーと↓キーで項目を移動 Enterで確定
+ * @param message プロンプトに表示するメッセージ
+ * @param yesOrNoMenu {"肯定の選択肢","否定の選択肢"}という形式の配列、大きさは2
+ * @return true :Yesの場合,false :否定の場合
+ */
+bool yesOrNoPrompt(const char *message, const char *yesOrNoMenu[]);
 /**
  * @brief ユーザーがqキーを押すまで待機するプロンプト
  */
