@@ -197,8 +197,6 @@ void Controller::searchUserById() {
     }
     try {
         auto user = db->searchById(id);
-        constexpr int yesOrNoMenuLength = 2;
-        const char *yesOrNoMenu[yesOrNoMenuLength] = {"はい", "いいえ"};
         std::cout << "アカウントが見つかりました" << std::endl;
         std::cout << "==================================" << std::endl;
         std::cout << user.toString() << std::endl;
