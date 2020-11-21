@@ -4,7 +4,7 @@
  */
 #include <stdexcept>
 /**
- * バリデーションエラーを管理するクラス
+ * @brief バリデーションエラーを管理するクラス
  */
 class ValidationException : public std::runtime_error {
   public:

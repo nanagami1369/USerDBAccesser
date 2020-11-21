@@ -1,13 +1,12 @@
 /**
  * @file Controller.h
- * @brief UserDBをCLIで扱うためのクラス
+ * @brief UserDBをCUIで扱うためのクラス
  */
 #pragma once
 #include "UserDB.h"
 #include <string>
 /**
- * @file Controller.h
- * @brief UserDBをCLIから扱うコントローラー
+ * @brief UserDBをCUIから扱うコントローラー
  */
 class Controller {
   private:
