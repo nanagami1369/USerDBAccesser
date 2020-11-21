@@ -4,5 +4,5 @@
 
 TEST(UserTest, toString) {
     auto user = new User(1, "山田 太郎", "12345678", true, ADMIN);
-    ASSERT_EQ("1|山田 太郎|********|true|ADMIN", user->toString());
+    ASSERT_EQ("1|山田 太郎|********|有効|ADMIN", user->toString());
 }
