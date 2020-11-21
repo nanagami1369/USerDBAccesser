@@ -57,8 +57,21 @@ void Controller::addUser() {
     const char *levelMenu[levelMenuLength] = {"ADMIN", "PREM", "GEN", "TRY"};
     levelNumber = Prompt::selectMenuPrompt("権限を決定して下さい", levelMenu, levelMenuLength);
     auto level = intToT_Level(levelNumber);
-    db->add(name, pass, avail, level);
-    std::cout << "ユーザーの追加に成功しました" << std::endl;
+    std::cout << "==================================" << std::endl;
+    std::cout << "氏名：" << name << std::endl;
+    std::cout << "パスワード：********" << std::endl;
+    std::cout << "アカウントの状態：" << (avail ? "有効" : "無効") << std::endl;
+    std::cout << "権限：" << t_LevelToString(level) << std::endl;
+    std::cout << "==================================" << std::endl;
+    const char *isSaveUserMenu[] = {"追加する", "いいえ"};
+    auto isSave = Prompt::yesOrNoPrompt("以下のアカウントを追加しますか？", isSaveUserMenu);
+    if (isSave) {
+        db->add(name, pass, avail, level);
+        std::cout << "ユーザーの追加に成功しました" << std::endl;
+        return;
+    }
+    std::cout << "ユーザーの追加を止めました" << std::endl;
+    return;
 }
 
 void Controller::removeUser() {
