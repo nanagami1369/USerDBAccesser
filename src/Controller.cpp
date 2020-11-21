@@ -125,8 +125,6 @@ void Controller::changeAvail() {
             if (isUnEnable) {
                 try {
                     db->update(user.ID, user.Name, "", false, user.Level);
-                } catch (const std::range_error &e) {
-                    std::cerr << "アカウントが見つかりませんでした" << std::endl;
                 } catch (const ValidationException &e) {
                     std::cerr << e.what() << std::endl;
                 }
@@ -141,8 +139,6 @@ void Controller::changeAvail() {
             if (isEnable) {
                 try {
                     db->update(user.ID, user.Name, "", true, user.Level);
-                } catch (const std::range_error &e) {
-                    std::cerr << "アカウントが見つかりませんでした" << std::endl;
                 } catch (const ValidationException &e) {
                     std::cerr << e.what() << std::endl;
                 }
