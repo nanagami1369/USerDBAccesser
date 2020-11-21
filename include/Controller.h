@@ -53,6 +53,10 @@ class Controller {
      * @note searchUser関数から呼ばれる
      */
     void searchUserByLevel();
+    /**
+     * @brief ユーザーアカウントの情報を更新する処理
+     */
+    void updateUser();
 
   public:
     Controller(UserDB *db);
