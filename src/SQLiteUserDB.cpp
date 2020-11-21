@@ -179,7 +179,7 @@ void SQLiteUserDB::WriterAllUserToConsole() {
     try {
         SQLite::Database db(dbName, SQLite::OPEN_READONLY);
         SQLite::Statement query(db, "SELECT * FROM user");
-        std::cout << " ID | Name | Pass | avail | Level" << std::endl;
+        std::cout << " ID | Name | Pass | avail | Level" << '\n';
         while (query.executeStep()) {
             auto id = query.getColumn(0);
             auto name = query.getColumn(1);
@@ -187,7 +187,7 @@ void SQLiteUserDB::WriterAllUserToConsole() {
             auto avail = query.getColumn(3).getInt() == 1 ? true : false;
             auto level = intToT_Level(query.getColumn(4));
             auto user = new User(id, name, pass, avail, level);
-            std::cout << user->toString() << std::endl;
+            std::cout << user->toString() << '\n';
         }
     } catch (const SQLite::Exception &e) {
         std::stringstream message;

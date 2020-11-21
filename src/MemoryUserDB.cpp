@@ -144,9 +144,9 @@ void MemoryUserDB::updateInternalDatabase(
 }
 
 void MemoryUserDB::WriterAllUserToConsole() {
-    std::cout << " ID | Name | Pass | avail | Level" << std::endl;
+    std::cout << " ID | Name | Pass | avail | Level" << '\n';
     for (auto &user : this->Memory) {
-        std::cout << user->toString() << std::endl;
+        std::cout << user->toString() << '\n';
     }
 }
 
