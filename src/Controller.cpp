@@ -82,25 +82,31 @@ void Controller::removeUser() {
         std::cerr << e.what() << std::endl;
         return;
     }
+    User user(0, "", "", true, ADMIN);
     try {
-        auto user = this->db->searchById(id);
-        constexpr int yesOrNoMenuLength = 2;
-        const char *yesOrNoMenu[yesOrNoMenuLength] = {"削除する", "いいえ"};
+        user = db->searchById(id);
         std::cout << "アカウントが見つかりました" << std::endl;
         std::cout << "==================================" << std::endl;
         std::cout << user.toString() << std::endl;
         std::cout << "==================================" << std::endl;
-        auto isRemove = Prompt::yesOrNoPrompt("このアカウントを削除しますか？", yesOrNoMenu);
-        if (isRemove) {
+    } catch (const std::range_error &e) {
+        std::cerr << "アカウントが見つかりませんでした" << std::endl;
+        return;
+    } catch (const ValidationException &e) {
+        std::cerr << e.what() << std::endl;
+    }
+    constexpr int yesOrNoMenuLength = 2;
+    const char *yesOrNoMenu[yesOrNoMenuLength] = {"削除する", "いいえ"};
+    auto isRemove = Prompt::yesOrNoPrompt("このアカウントを削除しますか？", yesOrNoMenu);
+    if (isRemove) {
+        try {
             db->remove(user.ID);
             std::cout << "アカウントを削除しました。" << std::endl;
             return;
+        } catch (const ValidationException &e) {
+            std::cerr << e.what() << std::endl;
         }
         std::cout << "アカウントを削除しませんでした" << std::endl;
-    } catch (const ValidationException &e) {
-        std::cerr << e.what() << std::endl;
-    } catch (const std::range_error &e) {
-        std::cerr << e.what() << std::endl;
     }
 }
 
@@ -112,46 +118,47 @@ void Controller::changeAvail() {
         std::cerr << e.what() << std::endl;
         return;
     }
+    User user(0, "", "", true, ADMIN);
     try {
-        auto user = db->searchById(id);
+        user = db->searchById(id);
         std::cout << "アカウントが見つかりました" << std::endl;
         std::cout << "==================================" << std::endl;
         std::cout << user.toString() << std::endl;
         std::cout << "==================================" << std::endl;
-        if (user.Avail) {
-            std::cout << "このアカウントは有効です" << std::endl;
-            const char *unEnableYesOrNoMenu[] = {"無効化する", "いいえ"};
-            auto isUnEnable = Prompt::yesOrNoPrompt("無効化しますか？", unEnableYesOrNoMenu);
-            if (isUnEnable) {
-                try {
-                    db->update(user.ID, user.Name, "", false, user.Level);
-                } catch (const ValidationException &e) {
-                    std::cerr << e.what() << std::endl;
-                }
-                std::cout << "アカウントを無効化しました" << std::endl;
-                return;
-            }
-            std::cout << "アカウントを無効化しませんでした" << std::endl;
-        } else {
-            std::cout << "このアカウントは無効化されています" << std::endl;
-            const char *enableYesOrNoMenu[] = {"有効にする", "いいえ"};
-            auto isEnable = Prompt::yesOrNoPrompt("有効にしますか？", enableYesOrNoMenu);
-            if (isEnable) {
-                try {
-                    db->update(user.ID, user.Name, "", true, user.Level);
-                } catch (const ValidationException &e) {
-                    std::cerr << e.what() << std::endl;
-                }
-                std::cout << "アカウントを有効にしました" << std::endl;
-                return;
-            }
-            std::cout << "アカウントを有効にしませんでした" << std::endl;
-        }
     } catch (const std::range_error &e) {
         std::cerr << "アカウントが見つかりませんでした" << std::endl;
         return;
     } catch (const ValidationException &e) {
         std::cerr << e.what() << std::endl;
+    }
+    if (user.Avail) {
+        std::cout << "このアカウントは有効です" << std::endl;
+        const char *unEnableYesOrNoMenu[] = {"無効化する", "いいえ"};
+        auto isUnEnable = Prompt::yesOrNoPrompt("無効化しますか？", unEnableYesOrNoMenu);
+        if (isUnEnable) {
+            try {
+                db->update(user.ID, user.Name, "", false, user.Level);
+            } catch (const ValidationException &e) {
+                std::cerr << e.what() << std::endl;
+            }
+            std::cout << "アカウントを無効化しました" << std::endl;
+            return;
+        }
+        std::cout << "アカウントを無効化しませんでした" << std::endl;
+    } else {
+        std::cout << "このアカウントは無効化されています" << std::endl;
+        const char *enableYesOrNoMenu[] = {"有効にする", "いいえ"};
+        auto isEnable = Prompt::yesOrNoPrompt("有効にしますか？", enableYesOrNoMenu);
+        if (isEnable) {
+            try {
+                db->update(user.ID, user.Name, "", true, user.Level);
+            } catch (const ValidationException &e) {
+                std::cerr << e.what() << std::endl;
+            }
+            std::cout << "アカウントを有効にしました" << std::endl;
+            return;
+        }
+        std::cout << "アカウントを有効にしませんでした" << std::endl;
     }
 }
 
@@ -281,74 +288,82 @@ void Controller::updateUser() {
         std::cerr << e.what() << std::endl;
         return;
     }
+    User user(0, "", "", true, ADMIN);
     try {
-        auto user = db->searchById(id);
+        user = db->searchById(id);
         std::cout << "アカウントが見つかりました" << std::endl;
         std::cout << "==================================" << std::endl;
         std::cout << user.toString() << std::endl;
         std::cout << "==================================" << std::endl;
-        User changedUser(user.ID, user.Name, "", user.Avail, user.Level);
-        // 名前変更
-        const char *isChangedNameMenu[] = {"名前を変更する", "いいえ"};
-        auto isChangedName = Prompt::yesOrNoPrompt("名前を変更しますか？", isChangedNameMenu);
-        if (isChangedName) {
-            while (true) {
-                try {
-                    changedUser.Name = Prompt::inputStringPrompt("名前を入力して下さい");
-                    break;
-                } catch (const ValidationException &e) {
-                    std::cerr << e.what() << std::endl;
-                }
-            };
-        }
-        // パスワード変更
-        const char *isChangedPassWordMenu[] = {"パスワードを変更する", "いいえ"};
-        auto isChangedPassWord = Prompt::yesOrNoPrompt("パスワードを変更しますか？", isChangedPassWordMenu);
-        if (isChangedPassWord) {
-            changedUser.Pass = Prompt::inputPasswordPrompt();
-        }
-        // 有効、無効
-        if (user.Avail) {
-            std::cout << "このアカウントは有効です" << std::endl;
-            const char *unEnableYesOrNoMenu[] = {"無効化する", "いいえ"};
-            auto isUnEnable = Prompt::yesOrNoPrompt("無効化しますか？", unEnableYesOrNoMenu);
-            if (isUnEnable) {
-                changedUser.Avail = false;
+    } catch (const std::range_error &e) {
+        std::cerr << "アカウントが見つかりませんでした" << std::endl;
+        return;
+    } catch (const ValidationException &e) {
+        std::cerr << e.what() << std::endl;
+    }
+    User changedUser(user.ID, user.Name, "", user.Avail, user.Level);
+    // 名前変更
+    const char *isChangedNameMenu[] = {"名前を変更する", "いいえ"};
+    auto isChangedName = Prompt::yesOrNoPrompt("名前を変更しますか？", isChangedNameMenu);
+    if (isChangedName) {
+        while (true) {
+            try {
+                changedUser.Name = Prompt::inputStringPrompt("名前を入力して下さい");
+                break;
+            } catch (const ValidationException &e) {
+                std::cerr << e.what() << std::endl;
             }
-        } else {
-            std::cout << "このアカウントは無効化されています" << std::endl;
-            const char *enableYesOrNoMenu[] = {"有効にする", "いいえ"};
-            auto isEnable = Prompt::yesOrNoPrompt("有効にしますか？", enableYesOrNoMenu);
-            if (isEnable) {
-                changedUser.Avail = true;
-            }
+        };
+    }
+    // パスワード変更
+    const char *isChangedPassWordMenu[] = {"パスワードを変更する", "いいえ"};
+    auto isChangedPassWord = Prompt::yesOrNoPrompt("パスワードを変更しますか？", isChangedPassWordMenu);
+    if (isChangedPassWord) {
+        changedUser.Pass = Prompt::inputPasswordPrompt();
+    }
+    // 有効、無効
+    if (user.Avail) {
+        std::cout << "このアカウントは有効です" << std::endl;
+        const char *unEnableYesOrNoMenu[] = {"無効化する", "いいえ"};
+        auto isUnEnable = Prompt::yesOrNoPrompt("無効化しますか？", unEnableYesOrNoMenu);
+        if (isUnEnable) {
+            changedUser.Avail = false;
         }
-        // 権限
-        const char *isChangedLevelMenu[] = {"権限を変更する", "いいえ"};
-        auto isChangedLevel = Prompt::yesOrNoPrompt("権限を変更しますか？", isChangedLevelMenu);
-        if (isChangedLevel) {
-            constexpr int whichLevelModeMenuLength = 4;
-            const char *whichLevelModeMenu[whichLevelModeMenuLength] = {"ADMIN", "PREM", "GEN", "TRY"};
-            auto whichLevel = Prompt::selectMenuPrompt("どちらの状態を検索しますか？", whichLevelModeMenu, whichLevelModeMenuLength);
-            auto level = intToT_Level(whichLevel);
-            changedUser.Level = level;
+    } else {
+        std::cout << "このアカウントは無効化されています" << std::endl;
+        const char *enableYesOrNoMenu[] = {"有効にする", "いいえ"};
+        auto isEnable = Prompt::yesOrNoPrompt("有効にしますか？", enableYesOrNoMenu);
+        if (isEnable) {
+            changedUser.Avail = true;
         }
-        // 確認
-        std::cout << "==================================" << std::endl;
-        std::cout << "氏名：" << user.Name << " >> " << changedUser.Name << std::endl;
-        std::cout << "パスワード： "
-                  << (changedUser.Pass.empty() ? "変更なし" : "変更あり")
-                  << std::endl;
-        std::cout << "アカウントの状態："
-                  << (user.Avail ? "有効" : "無効") << " >> " << (changedUser.Avail ? "有効" : "無効")
-                  << std::endl;
-        std::cout << "権限："
-                  << t_LevelToString(user.Level) << ">>" << t_LevelToString(changedUser.Level)
-                  << std::endl;
-        std::cout << "==================================" << std::endl;
-        const char *isSaveUserMenu[] = {"変更する", "いいえ"};
-        auto isSave = Prompt::yesOrNoPrompt("以下の情報に変更しますか？", isSaveUserMenu);
-        if (isSave) {
+    }
+    // 権限
+    const char *isChangedLevelMenu[] = {"権限を変更する", "いいえ"};
+    auto isChangedLevel = Prompt::yesOrNoPrompt("権限を変更しますか？", isChangedLevelMenu);
+    if (isChangedLevel) {
+        constexpr int whichLevelModeMenuLength = 4;
+        const char *whichLevelModeMenu[whichLevelModeMenuLength] = {"ADMIN", "PREM", "GEN", "TRY"};
+        auto whichLevel = Prompt::selectMenuPrompt("どちらの状態を検索しますか？", whichLevelModeMenu, whichLevelModeMenuLength);
+        auto level = intToT_Level(whichLevel);
+        changedUser.Level = level;
+    }
+    // 確認
+    std::cout << "==================================" << std::endl;
+    std::cout << "氏名：" << user.Name << " >> " << changedUser.Name << std::endl;
+    std::cout << "パスワード： "
+              << (changedUser.Pass.empty() ? "変更なし" : "変更あり")
+              << std::endl;
+    std::cout << "アカウントの状態："
+              << (user.Avail ? "有効" : "無効") << " >> " << (changedUser.Avail ? "有効" : "無効")
+              << std::endl;
+    std::cout << "権限："
+              << t_LevelToString(user.Level) << ">>" << t_LevelToString(changedUser.Level)
+              << std::endl;
+    std::cout << "==================================" << std::endl;
+    const char *isSaveUserMenu[] = {"変更する", "いいえ"};
+    auto isSave = Prompt::yesOrNoPrompt("以下の情報に変更しますか？", isSaveUserMenu);
+    if (isSave) {
+        try {
             db->update(
                 changedUser.ID,
                 changedUser.Name,
@@ -356,16 +371,13 @@ void Controller::updateUser() {
                 changedUser.Avail,
                 changedUser.Level);
             std::cout << "情報の更新に成功しました" << std::endl;
-            return;
+        } catch (const ValidationException &e) {
+            std::cerr << e.what() << std::endl;
         }
-        std::cout << "ユーザーの追加を止めました" << std::endl;
         return;
-    } catch (const std::range_error &e) {
-        std::cerr << "アカウントが見つかりませんでした" << std::endl;
-        return;
-    } catch (const ValidationException &e) {
-        std::cerr << e.what() << std::endl;
     }
+    std::cout << "ユーザーの追加を止めました" << std::endl;
+    return;
 }
 
 void Controller::start() {
