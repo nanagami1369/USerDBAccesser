@@ -90,8 +90,8 @@ void Controller::removeUser() {
         std::cout << "==================================" << std::endl;
         std::cout << user.toString() << std::endl;
         std::cout << "==================================" << std::endl;
-        auto select = Prompt::yesOrNoPrompt("このアカウントを削除しますか？", yesOrNoMenu);
-        if (select) {
+        auto isRemove = Prompt::yesOrNoPrompt("このアカウントを削除しますか？", yesOrNoMenu);
+        if (isRemove) {
             db->remove(user.ID);
             std::cout << "アカウントを削除しました。" << std::endl;
             return;
@@ -121,8 +121,8 @@ void Controller::changeAvail() {
         if (user.Avail) {
             std::cout << "このアカウントは有効です" << std::endl;
             const char *unEnableYesOrNoMenu[] = {"無効化する", "いいえ"};
-            auto select = Prompt::yesOrNoPrompt("無効化しますか？", unEnableYesOrNoMenu);
-            if (select) {
+            auto isUnEnable = Prompt::yesOrNoPrompt("無効化しますか？", unEnableYesOrNoMenu);
+            if (isUnEnable) {
                 try {
                     db->update(user.ID, user.Name, "", false, user.Level);
                 } catch (const std::range_error &e) {
@@ -137,8 +137,8 @@ void Controller::changeAvail() {
         } else {
             std::cout << "このアカウントは無効化されています" << std::endl;
             const char *enableYesOrNoMenu[] = {"有効にする", "いいえ"};
-            auto select = Prompt::yesOrNoPrompt("有効にしますか？", enableYesOrNoMenu);
-            if (select) {
+            auto isEnable = Prompt::yesOrNoPrompt("有効にしますか？", enableYesOrNoMenu);
+            if (isEnable) {
                 try {
                     db->update(user.ID, user.Name, "", true, user.Level);
                 } catch (const std::range_error &e) {
