@@ -74,6 +74,12 @@ void Controller::addUser() {
     return;
 }
 
+void Controller::showUser() {
+    std::cout << "ユーザーの一覧を表示します" << std::endl;
+    db->WriterAllUserToConsole();
+    Prompt::pausePrompt();
+}
+
 void Controller::removeUser() {
     uint id = -1;
     try {
@@ -403,9 +409,7 @@ void Controller::start() {
             addUser();
             break;
         case 2:
-            std::cout << "ユーザーの一覧を表示します" << std::endl;
-            db->WriterAllUserToConsole();
-            Prompt::pausePrompt();
+            showUser();
             break;
         case 3:
             removeUser();

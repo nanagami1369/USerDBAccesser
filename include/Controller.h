@@ -21,6 +21,10 @@ class Controller {
      */
     void addUser();
     /**
+     * @brief ユーザーの一覧を表示する処理
+     */
+    void showUser();
+    /**
      * @brief ユーザーアカウントを追加する処理
      */
     void removeUser();
