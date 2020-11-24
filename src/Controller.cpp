@@ -363,7 +363,7 @@ void Controller::updateUser() {
               << (user.Avail ? "有効" : "無効") << " >> " << (changedUser.Avail ? "有効" : "無効")
               << '\n';
     std::cout << "権限："
-              << t_LevelToString(user.Level) << ">>" << t_LevelToString(changedUser.Level)
+              << t_LevelToString(user.Level) << " >> " << t_LevelToString(changedUser.Level)
               << '\n';
     std::cout << "==================================" << '\n';
     const char *isSaveUserMenu[] = {"変更する", "いいえ"};
