@@ -24,14 +24,14 @@ int Prompt::inputNumberPrompt(const char *message, const int minLength, const in
     try {
         number = std::stoi(value);
     } catch (const std::invalid_argument e) {
-        throw ValidationException("入力された値を数字に変換できませんでした");
+        throw std::invalid_argument("入力された値を数字に変換できませんでした");
     } catch (const std::out_of_range) {
-        throw ValidationException("有効数字の範囲外です");
+        throw std::out_of_range("有効数字の範囲外です");
     }
     if (minLength <= number && number <= maxLength) {
         return number;
     }
-    throw ValidationException("有効数字の範囲外です");
+    throw std::out_of_range("有効数字の範囲外です");
 }
 
 static void printSelectMenu(const char *menuItems[], const int menuItemsLength, const uint8_t selectIndex) {

@@ -36,8 +36,8 @@ std::string inputStringPrompt(const char *message);
  * @param minLength 有効数字の最低値
  * @param maxLength 有効数字の最高値
  * @return 入力された数値
- * @attention 数値に変換できなかった場合 ValidationException を出す
- * @attention 有効数字の範囲外の場合 ValidationException を出す
+ * @attention 数値に変換できなかった場合 std::invalid_argument を出す
+ * @attention 有効数字の範囲外の場合 std::out_of_range を出す
  */
 int inputNumberPrompt(const char *message, const int minLength, const int maxLength);
 /**

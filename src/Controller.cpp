@@ -25,7 +25,9 @@ uint Controller::InputIdPrompt() {
     while (true) {
         try {
             return Prompt::inputNumberPrompt("IDを入力して下さい", 0, lastId);
-        } catch (const ValidationException &e) {
+        } catch (const std::invalid_argument &e) {
+            std::cerr << e.what() << '\n';
+        } catch (const std::out_of_range &e) {
             std::cerr << e.what() << '\n';
         }
     }
