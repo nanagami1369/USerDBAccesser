@@ -11,7 +11,7 @@ std::string Prompt::inputStringPrompt(const char *message) {
     std::string value = "";
     std::getline(std::cin, value);
     if (value.empty() || value[0] == '\n') {
-        throw ValidationException("何も入力されてません");
+        throw std::invalid_argument("何も入力されてません");
     }
     return value;
 }

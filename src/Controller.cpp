@@ -39,7 +39,7 @@ void Controller::addUser() {
         try {
             name = Prompt::inputStringPrompt("名前を入力して下さい");
             break;
-        } catch (const ValidationException &e) {
+        } catch (const std::invalid_argument &e) {
             std::cerr << e.what() << '\n';
         }
     }
@@ -225,7 +225,7 @@ void Controller::searchUserByName() {
         try {
             name = Prompt::inputStringPrompt("名前を入力して下さい");
             break;
-        } catch (const ValidationException &e) {
+        } catch (const std::invalid_argument &e) {
             std::cerr << e.what() << '\n';
         }
     }
@@ -316,7 +316,7 @@ void Controller::updateUser() {
             try {
                 changedUser.Name = Prompt::inputStringPrompt("名前を入力して下さい");
                 break;
-            } catch (const ValidationException &e) {
+            } catch (const std::invalid_argument &e) {
                 std::cerr << e.what() << '\n';
             }
         };

@@ -27,7 +27,7 @@ constexpr uint8_t WHITE = 7;
  * @brief 標準入力から文字列を取得するプロンプト
  * @param message プロンプトに表示するメッセージ
  * @return 入力された文字列
- * @attention 入力がなかった場合 ValidationException を出す
+ * @attention 入力がなかった場合 std::invalid_argument を出す
  */
 std::string inputStringPrompt(const char *message);
 /**
