@@ -78,7 +78,10 @@ void Controller::addUser() {
 
 void Controller::showUser() {
     std::cout << "ユーザーの一覧を表示します" << '\n';
-    db->WriterAllUserToConsole();
+    std::cout << " ID | Name | Pass | avail | Level" << '\n';
+    for (auto &&user : db->GetAllUserData()) {
+        std::cout << user.toString() << '\n';
+    };
     Prompt::pausePrompt();
 }
 

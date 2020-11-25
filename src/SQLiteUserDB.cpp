@@ -4,7 +4,6 @@
 #include <SQLiteCpp/SQLiteCpp.h>
 #include <SQLiteCpp/VariadicBind.h>
 #include <exception>
-#include <iostream>
 #include <sstream>
 #include <string>
 
@@ -175,20 +174,20 @@ void SQLiteUserDB::updateInternalDatabase(
     }
 }
 
-void SQLiteUserDB::WriterAllUserToConsole() {
+std::vector<User> SQLiteUserDB::GetAllUserData() {
     try {
+        std::vector<User> userData;
         SQLite::Database db(dbName, SQLite::OPEN_READONLY);
         SQLite::Statement query(db, "SELECT * FROM user");
-        std::cout << " ID | Name | Pass | avail | Level" << '\n';
         while (query.executeStep()) {
             auto id = query.getColumn(0);
             auto name = query.getColumn(1);
             auto pass = query.getColumn(2);
             auto avail = query.getColumn(3).getInt() == 1 ? true : false;
             auto level = intToT_Level(query.getColumn(4));
-            auto user = new User(id, name, pass, avail, level);
-            std::cout << user->toString() << '\n';
+            userData.push_back(User(id, name, pass, avail, level));
         }
+        return userData;
     } catch (const SQLite::Exception &e) {
         std::stringstream message;
         message << "SQLiteでエラーが発生しました。: " << e.what();

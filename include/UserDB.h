@@ -166,7 +166,7 @@ class UserDB {
     /**
      * @brief データベースのすべてのユーザー情報をコンソールへ出力
      */
-    virtual void WriterAllUserToConsole() = 0;
+    virtual std::vector<User> GetAllUserData() = 0;
     /**
      * @brief 最後に追加されたアカウントのIdを返却する
      * @return 最後に追加されたのId

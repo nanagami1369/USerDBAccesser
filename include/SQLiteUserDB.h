@@ -22,7 +22,7 @@ class SQLiteUserDB : public UserDB {
         const t_Level level) override;
 
   public:
-    void WriterAllUserToConsole() override;
+    std::vector<User> GetAllUserData() override;
     uint GetLastId() override;
     SQLiteUserDB();
 };

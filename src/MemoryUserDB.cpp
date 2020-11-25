@@ -1,7 +1,6 @@
 #include "MemoryUserDB.h"
 #include "User.h"
 #include "UserDB.h"
-#include <iostream>
 #include <regex>
 
 int MemoryUserDB::searchIndex(const uint id) {
@@ -143,11 +142,17 @@ void MemoryUserDB::updateInternalDatabase(
     user->Level = level;
 }
 
-void MemoryUserDB::WriterAllUserToConsole() {
-    std::cout << " ID | Name | Pass | avail | Level" << '\n';
+std::vector<User> MemoryUserDB::GetAllUserData() {
+    std::vector<User> userData;
     for (auto &user : this->Memory) {
-        std::cout << user->toString() << '\n';
+        userData.push_back(User(
+            user->ID,
+            user->Name,
+            user->Pass,
+            user->Avail,
+            user->Level));
     }
+    return userData;
 }
 
 uint MemoryUserDB::GetLastId() {
