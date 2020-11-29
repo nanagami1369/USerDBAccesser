@@ -26,14 +26,15 @@ elseif("${DB_TYPE}" MATCHES "^sqlite3$")
     target_link_libraries(UserDB SQLiteCpp crypt)
 endif()
 
-# CLI
 if("${DB_TYPE}" MATCHES "^memory$")
     add_compile_options(-D MEMORY_DB)
 elseif("${DB_TYPE}" MATCHES "^sqlite3$")
     add_compile_options(-D SQLITE3_DB)
 endif()
 
-add_executable(UserDBAccesser src/main.cpp src/Controller.cpp)
+# CUI
+include_directories(${PROJECT_SOURCE_DIR}/CUI/include)
+add_executable(UserDBAccesser CUI/src/main.cpp CUI/src/Controller.cpp)
 target_link_libraries(UserDBAccesser UserDB)
 
 
