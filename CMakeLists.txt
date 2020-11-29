@@ -17,12 +17,12 @@ include_directories(${PROJECT_SOURCE_DIR}/include)
 
 # Library
 if("${DB_TYPE}" MATCHES "^memory$")
-    ADD_LIBRARY(UserDB SHARED ${USER_DB_ACCESSER_COMMON_SRC} src/MemoryUserDB.cpp)
+    ADD_LIBRARY(UserDB STATIC ${USER_DB_ACCESSER_COMMON_SRC} src/MemoryUserDB.cpp)
     target_link_libraries(UserDB crypt)
 elseif("${DB_TYPE}" MATCHES "^sqlite3$")
     add_subdirectory(SQLiteCpp)
     include_directories(SQLiteCpp/include)
-    ADD_LIBRARY(UserDB SHARED ${USER_DB_ACCESSER_COMMON_SRC} src/SQLiteUserDB.cpp)
+    ADD_LIBRARY(UserDB STATIC ${USER_DB_ACCESSER_COMMON_SRC} src/SQLiteUserDB.cpp)
     target_link_libraries(UserDB SQLiteCpp crypt)
 endif()
 
