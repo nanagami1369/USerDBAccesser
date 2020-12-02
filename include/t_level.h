@@ -22,3 +22,9 @@ std::string t_LevelToString(t_Level level);
  * @attention 権限の数より大きな値が入力された場合 invalid_argument を出す
  */
 t_Level intToT_Level(int level);
+
+/**
+ * @brief 文字列を権限へ変換
+ * @attention 存在しない権限が入力された場合 invalid_argument を出す
+ */
+t_Level stringToT_Level(std::string level);
