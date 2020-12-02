@@ -24,5 +24,5 @@ class SQLiteUserDB : public UserDB {
   public:
     std::vector<User> GetAllUserData() override;
     uint GetLastId() override;
-    SQLiteUserDB();
+    SQLiteUserDB(const std::string dbPath);
 };

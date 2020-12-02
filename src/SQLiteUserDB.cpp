@@ -209,10 +209,9 @@ uint SQLiteUserDB::GetLastId() {
         throw std::runtime_error(message.str());
     }
 }
-
-SQLiteUserDB::SQLiteUserDB() {
+SQLiteUserDB::SQLiteUserDB(const std::string dbPath) {
     try {
-        SQLite::Database db("user.sqlite3", SQLite::OPEN_READWRITE | SQLite::OPEN_CREATE);
+        SQLite::Database db(dbPath, SQLite::OPEN_READWRITE | SQLite::OPEN_CREATE);
         db.exec("CREATE TABLE IF NOT EXISTS user (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, pass TEXT, avail NUMERIC, level INTGER)");
     } catch (const SQLite::Exception &e) {
         std::stringstream message;
