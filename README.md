@@ -10,7 +10,7 @@
 
 - git 2.20.1
 - sqlite3 3.27.2 2019-02-25 16:06:06
-- g++ (Debian 8.3.0-6) 8.3.0
+- g++ 8.4.0
 - cmake version 3.13.4
 - make GNU Make 4.2.1
 - docker 19.03.13
