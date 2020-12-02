@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="css/main.css" />
+    <title>UserDBAccesser</title>
+  </head>
+  <body>
+    <header id="main-header" class="content">
+      <h1>UserDBAccesser</h1>
+    </header>
+    <main>
+      <form
+        method="POST"
+        id="add-user-form"
+      >
+        <h4>アカウントの追加</h4>
+        <label>名前</label>
+        <input type="text" name="name" id="add-user-input-name" required />
+        <label>パスワード(8文字以上)</label>
+        <input
+          type="password"
+          name="password"
+          pattern=".{8,}"
+          id="add-user-input-password"
+          required
+        />
+        <label>状態</label>
+        <label for="avail-ragio-true">
+          <input
+            type="radio"
+            name="avail"
+            value="true"
+            id="avail-ragio-true"
+            checked
+          />有効
+        </label>
+        <label for="avail-ragio-false">
+          <input
+            type="radio"
+            name="avail"
+            value="false"
+            id="avail-ragio-false"
+          />無効
+        </label>
+        <label>権限</label>
+        <label for="level-radio-admin">
+          <input
+            type="radio"
+            name="level"
+            value="ADMIN"
+            id="level-radio-admin"
+            checked
+          />管理者
+        </label>
+        <label for="level-radio-prem">
+          <input
+            type="radio"
+            name="level"
+            value="PREM"
+            id="level-radio-prem"
+          />プレミア
+        </label>
+        <label for="level-radio-gen">
+          <input
+            type="radio"
+            name="level"
+            value="GEN"
+            id="level-radio-gen"
+          />一般
+        </label>
+        <label for="level-radio-try">
+          <input
+            type="radio"
+            name="level"
+            value="TRY"
+            id="level-radio-try"
+          />お試し
+        </label>
+        <input type="submit" value="アカウントを追加する" />
+      </form>
+      <table id="user-data-table">
+        <tr>
+          <th>ID</th>
+          <th>名前</th>
+          <th>パスワード</th>
+          <th>状態</th>
+          <th>権限</th>
+        </tr>
+      </table>
+    </main>
+    <script script type="text/javascript" src="./js/main.js"></script>
+  </body>
+</html>
