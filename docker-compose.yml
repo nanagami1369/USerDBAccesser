@@ -1,0 +1,10 @@
+version: '3.8'
+services:
+  cgi:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    ports:
+      - 8080:80
+    volumes:
+      - ./web-app:/usr/local/apache2/htdocs

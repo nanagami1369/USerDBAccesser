@@ -90,6 +90,53 @@
         </tr>
       </table>
     </main>
-    <script script type="text/javascript" src="./js/main.js"></script>
   </body>
+  <script type="module">
+    import { escapeHtml } from './js/main.js'
+
+    const availToString = (avail) => {
+      if (avail == 1) {
+        return '有効'
+      } else {
+        return '無効'
+      }
+    }
+    const reloadTable = async () => {
+      const cgiUrl = './cgi-bin/UserDBAccesser.cgi'
+      const method = 'post'
+
+      const response = await fetch(cgiUrl, {
+        method: method,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ method: 'getAll' }),
+      })
+      const userData = await response.json()
+      const userTableElement = document.querySelector('#user-data-table')
+      // テーブルの削除
+      while (userTableElement.firstChild)
+        userTableElement.removeChild(userTableElement.firstChild)
+      // ヘッダー生成
+      const userTableHeader =
+        '<tr><th>ID</th><th>名前</th><th>パスワード</th><th>状態</th><th>権限</th></tr>'
+      let tableHtml = userTableHeader
+      userTableElement.innerHTML = tableHtml
+      // 要素の生成
+      userData.users.forEach((user) => {
+        userTableElement.innerHTML +=
+          '<tr><td>' +
+          user.id +
+          '</td><td>' +
+          escapeHtml(user.name) +
+          '</td><td>********</td><td>' +
+          availToString(user.avail) +
+          '</td><td>' +
+          user.level +
+          '</td></tr>'
+      })
+      return
+    }
+    reloadTable()
+  </script>
 </html>
