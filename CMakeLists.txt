@@ -37,6 +37,14 @@ include_directories(${PROJECT_SOURCE_DIR}/CUI/include)
 add_executable(UserDBAccesser CUI/src/main.cpp CUI/src/Controller.cpp)
 target_link_libraries(UserDBAccesser UserDB)
 
+#CGI
+set(JSON_BuildTests OFF CACHE INTERNAL "")
+add_subdirectory(json)
+include_directories(json/include)
+
+include_directories(${PROJECT_SOURCE_DIR}/CGI/include)
+add_executable(UserDBAccesser.cgi CGI/src/main.cpp CGI/src/CGIController.cpp)
+target_link_libraries(UserDBAccesser.cgi UserDB)
 
 # Test
 enable_testing()
