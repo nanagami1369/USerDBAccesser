@@ -13,6 +13,8 @@
 - g++ (Debian 8.3.0-6) 8.3.0
 - cmake version 3.13.4
 - make GNU Make 4.2.1
+- docker 19.03.13
+- docker-compose 1.27.4
 
 ## CUI
 
