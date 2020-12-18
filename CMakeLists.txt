@@ -24,12 +24,17 @@ elseif("${DB_TYPE}" MATCHES "^sqlite3$")
     include_directories(SQLiteCpp/include)
     ADD_LIBRARY(UserDB STATIC ${USER_DB_ACCESSER_COMMON_SRC} src/SQLiteUserDB.cpp)
     target_link_libraries(UserDB SQLiteCpp crypt)
+elseif("${DB_TYPE}" MATCHES "^mysql$")
+    ADD_LIBRARY(UserDB STATIC ${USER_DB_ACCESSER_COMMON_SRC} src/MySQLUserDB.cpp)
+    target_link_libraries(UserDB mysqlcppconn crypt)
 endif()
 
 if("${DB_TYPE}" MATCHES "^memory$")
     add_compile_options(-D MEMORY_DB)
 elseif("${DB_TYPE}" MATCHES "^sqlite3$")
     add_compile_options(-D SQLITE3_DB)
+elseif("${DB_TYPE}" MATCHES "^mysql$")
+    add_compile_options(-D MYSQL_DB)
 endif()
 
 # CUI
