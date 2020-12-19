@@ -9,6 +9,7 @@ CGIController::~CGIController() {
     delete db;
 }
 static void sendOK200Json(const nlohmann::json &json);
+static void sendCreated201JsonMessage(const std::string &message);
 static void sendBadRequest400JsonMessage(const std::string &errorMessage);
 
 std::string CGIController::getPostData() {
@@ -31,6 +32,37 @@ std::string CGIController::getPostData() {
     }
     input[length - 1] = '\0';
     return std::string(input);
+}
+
+void CGIController::addUser(const nlohmann::json &addUserJson) {
+    std::string name;
+    std::string rowPass;
+    bool avail;
+    t_Level level;
+    try {
+        name = addUserJson["name"].get<std::string>();
+        if (name.empty()) {
+            sendBadRequest400JsonMessage("名前に何も入力されてません 入力データ：{" + addUserJson.dump() + "}");
+        }
+        rowPass = addUserJson["pass"].get<std::string>();
+        if (rowPass.empty()) {
+            sendBadRequest400JsonMessage("パスワードに何も入力されてません 入力データ：{" + addUserJson.dump() + "}");
+        }
+        if (rowPass.length() < 8) {
+            sendBadRequest400JsonMessage("パスワードは8文字以上にして下さい");
+        }
+        avail = addUserJson["avail"].get<std::string>() == "true" ? true : false;
+        auto stringlevel = addUserJson["level"].get<std::string>();
+        level = stringToT_Level(stringlevel);
+    } catch (const nlohmann::json::type_error &e) {
+        sendBadRequest400JsonMessage("必須パラメータが設定されてません 入力データ：{" + addUserJson.dump() + "}");
+        return;
+    } catch (const std::invalid_argument &e) {
+        sendBadRequest400JsonMessage("存在しない権限が指定されました");
+        return;
+    }
+    db->add(name, rowPass, avail, level);
+    sendCreated201JsonMessage("アカウントが追加されました");
 }
 
 void CGIController::getAllUser() {
@@ -81,6 +113,19 @@ static void sendOK200Json(const nlohmann::json &json) {
                   "Cache-Control: no-cache\n\n";
     std::printf("%s", header);
     std::printf("%s", json.dump().c_str());
+}
+
+static void sendCreated201JsonMessage(const std::string &message) {
+    auto header = "Content-type: application/json; charset=utf-8\n"
+                  "Status: 201 Created\n"
+                  "Access-Control-Allow-Methods: POST\n"
+                  "Pragma: no-cache\n"
+                  "Cache-Control: no-cache\n\n";
+    nlohmann::json responcejson = {
+        {"message", message},
+    };
+    std::printf("%s", header);
+    std::printf("%s", responcejson.dump().c_str());
 }
 
 void CGIController::exec() {

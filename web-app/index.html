@@ -11,10 +11,7 @@
       <h1>UserDBAccesser</h1>
     </header>
     <main>
-      <form
-        method="POST"
-        id="add-user-form"
-      >
+      <form id="add-user-form">
         <h4>アカウントの追加</h4>
         <label>名前</label>
         <input type="text" name="name" id="add-user-input-name" required />
@@ -78,17 +75,13 @@
             id="level-radio-try"
           />お試し
         </label>
-        <input type="submit" value="アカウントを追加する" />
+        <input
+          id="send-form-add-user-button"
+          type="button"
+          value="アカウントを追加する"
+        />
       </form>
-      <table id="user-data-table">
-        <tr>
-          <th>ID</th>
-          <th>名前</th>
-          <th>パスワード</th>
-          <th>状態</th>
-          <th>権限</th>
-        </tr>
-      </table>
+      <table id="user-data-table"></table>
     </main>
   </body>
   <script type="module">
@@ -138,5 +131,39 @@
       return
     }
     reloadTable()
+    const sendFormAddUser = async () => {
+      const cgiUrl = './cgi-bin/UserDBAccesser.cgi'
+      const method = 'post'
+      const addUserFormElement = document.querySelector('#add-user-form')
+      // ユーザー名
+      const name = addUserFormElement.name.value
+      // パスワード
+      const password = addUserFormElement.password.value
+      // 状態
+      const avail = addUserFormElement.avail.value
+      // 権限
+      const level = addUserFormElement.level.value
+      const sendAddUserJson = JSON.stringify({
+        method: 'add',
+        name: name,
+        pass: password,
+        avail: avail,
+        level: level,
+      })
+      const response = await fetch(cgiUrl, {
+        method: method,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: sendAddUserJson,
+      })
+      const text = await response.text()
+      console.log(text)
+      reloadTable()
+      return
+    }
+    // アカウントを追加する処理をbuttonに登録
+    const button = document.querySelector('#send-form-add-user-button')
+    button.addEventListener('click', sendFormAddUser)
   </script>
 </html>

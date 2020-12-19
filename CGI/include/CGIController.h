@@ -8,6 +8,7 @@ class CGIController {
     std::vector<std::string> getPathInfo();
     std::string getPostData();
     void execMethod(const std::string &methodName, const nlohmann::json &args);
+    void addUser(const nlohmann::json &addUserJson);
     void getAllUser();
 
   public:
