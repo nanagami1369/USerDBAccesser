@@ -9,10 +9,13 @@ COPY src/ /workdir/src
 COPY include/ /workdir/include/
 COPY tests/ /workdir/tests/
 COPY CMakeLists.txt /workdir
-RUN apt-get update && apt-get update -y && apt-get install cmake -y
-RUN cmake -DDB_TYPE=memory /workdir && make
+RUN apt-get update && apt-get install cmake libmysqlcppconn-dev -y --no-install-recommends
+RUN cmake -DDB_TYPE=mysql /workdir && make
 
 FROM httpd:2.4
-RUN sed -ri 's/#LoadModule cgid_module/LoadModule cgid_module/g; \
-    s/#AddHandler cgi-script .cgi/AddHandler cgi-script .cgi/g' /usr/local/apache2/conf/httpd.conf
 COPY --from=builder /workdir/UserDBAccesser.cgi /usr/local/apache2/cgi-bin
+COPY ./httpd.tpl /usr/local/apache2/conf/httpd.conf
+COPY ./start.sh ./
+RUN chmod 744 ./start.sh
+RUN apt-get update && apt-get install libmysqlcppconn-dev -y --no-install-recommends
+CMD ["./start.sh"]

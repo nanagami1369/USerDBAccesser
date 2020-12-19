@@ -1,10 +1,32 @@
 version: '3.8'
 services:
+  mysql:
+    image: mariadb:10.5.8
+    ports:
+      - "3306:3306"
+    networks:
+      - user_net
+    environment:
+      MYSQL_ROOT_PASSWORD: iGIGIUgliuiuGIUGilugfsuag
+      MYSQL_USER: mysqluser
+      MYSQL_PASSWORD: MYSDHFOIhhuDSUIouhoDSHoa
+      MYSQL_DATABASE: test
   cgi:
     build:
       context: ./
       dockerfile: Dockerfile
+    networks:
+      - user_net
     ports:
       - 8080:80
     volumes:
       - ./web-app:/usr/local/apache2/htdocs
+    environment:
+      MYSQL_HOST: mysql:3306
+      MYSQL_USER: mysqluser
+      MYSQL_PASSWORD: MYSDHFOIhhuDSUIouhoDSHoa
+      MYSQL_DATABASE: test
+
+networks:
+  user_net:
+    driver: bridge
