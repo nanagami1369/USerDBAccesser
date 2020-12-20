@@ -1,9 +1,9 @@
-version: '3.8'
+version: "3.8"
 services:
   mysql:
     image: mariadb:10.5.8
     ports:
-      - "3306:3306"
+      - 3306:3306
     networks:
       - user_net
     environment:
@@ -20,7 +20,7 @@ services:
     ports:
       - 8080:80
     volumes:
-      - ./web-app:/usr/local/apache2/htdocs
+      - ./web-app/dist:/usr/local/apache2/htdocs
     environment:
       MYSQL_HOST: mysql:3306
       MYSQL_USER: mysqluser
