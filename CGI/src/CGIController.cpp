@@ -43,13 +43,16 @@ void CGIController::addUser(const nlohmann::json &addUserJson) {
         name = addUserJson["name"].get<std::string>();
         if (name.empty()) {
             sendBadRequest400JsonMessage("名前に何も入力されてません 入力データ：{" + addUserJson.dump() + "}");
+            return;
         }
         rowPass = addUserJson["pass"].get<std::string>();
         if (rowPass.empty()) {
             sendBadRequest400JsonMessage("パスワードに何も入力されてません 入力データ：{" + addUserJson.dump() + "}");
+            return;
         }
         if (rowPass.length() < 8) {
             sendBadRequest400JsonMessage("パスワードは8文字以上にして下さい");
+            return;
         }
         avail = addUserJson["avail"].get<std::string>() == "true" ? true : false;
         auto stringlevel = addUserJson["level"].get<std::string>();
