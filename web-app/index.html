@@ -7,94 +7,119 @@
     <title>UserDBAccesser</title>
   </head>
   <body>
-    <header id="main-header" class="content">
-      <h1>UserDBAccesser</h1>
-    </header>
-    <main>
-      <form id="add-user-form">
-        <h4>アカウントの追加</h4>
-        <label>名前</label>
-        <input type="text" name="name" id="add-user-input-name" required />
-        <label>パスワード(8文字以上)</label>
-        <input
-          type="password"
-          name="password"
-          pattern=".{8,}"
-          id="add-user-input-password"
-          required
-        />
-        <label>状態</label>
-        <label for="avail-ragio-true">
+    <div id="app">
+      <header id="main-header" class="content">
+        <h1>{{ title }}</h1>
+      </header>
+      <main>
+        <form id="add-user-form">
+          <h4>アカウントの追加</h4>
+          <label>名前</label>
           <input
-            type="radio"
-            name="avail"
-            value="true"
-            id="avail-ragio-true"
-            checked
-          />有効
-        </label>
-        <label for="avail-ragio-false">
+            type="text"
+            name="name"
+            id="add-user-input-name"
+            v-model="addUserForm.name"
+            required
+          />
+          <label>パスワード(8文字以上)</label>
           <input
-            type="radio"
-            name="avail"
-            value="false"
-            id="avail-ragio-false"
-          />無効
-        </label>
-        <label>権限</label>
-        <label for="level-radio-admin">
+            type="password"
+            name="password"
+            pattern=".{8,}"
+            id="add-user-input-password"
+            v-model="addUserForm.pass"
+            required
+          />
+          <label>状態</label>
+          <label for="avail-ragio-true">
+            <input
+              type="radio"
+              name="avail"
+              value="true"
+              id="avail-ragio-true"
+              v-model="addUserForm.avail"
+            />有効
+          </label>
+          <label for="avail-ragio-false">
+            <input
+              type="radio"
+              name="avail"
+              value="false"
+              id="avail-ragio-false"
+              v-model="addUserForm.avail"
+            />無効
+          </label>
+          <label>権限</label>
+          <label for="level-radio-admin">
+            <input
+              type="radio"
+              name="level"
+              value="ADMIN"
+              id="level-radio-admin"
+              v-model="addUserForm.level"
+            />管理者
+          </label>
+          <label for="level-radio-prem">
+            <input
+              type="radio"
+              name="level"
+              value="PREM"
+              id="level-radio-prem"
+              v-model="addUserForm.level"
+            />プレミア
+          </label>
+          <label for="level-radio-gen">
+            <input
+              type="radio"
+              name="level"
+              value="GEN"
+              id="level-radio-gen"
+              v-model="addUserForm.level"
+            />一般
+          </label>
+          <label for="level-radio-try">
+            <input
+              type="radio"
+              name="level"
+              value="TRY"
+              id="level-radio-try"
+              v-model="addUserForm.level"
+            />お試し
+          </label>
           <input
-            type="radio"
-            name="level"
-            value="ADMIN"
-            id="level-radio-admin"
-            checked
-          />管理者
-        </label>
-        <label for="level-radio-prem">
-          <input
-            type="radio"
-            name="level"
-            value="PREM"
-            id="level-radio-prem"
-          />プレミア
-        </label>
-        <label for="level-radio-gen">
-          <input
-            type="radio"
-            name="level"
-            value="GEN"
-            id="level-radio-gen"
-          />一般
-        </label>
-        <label for="level-radio-try">
-          <input
-            type="radio"
-            name="level"
-            value="TRY"
-            id="level-radio-try"
-          />お試し
-        </label>
-        <input
-          id="send-form-add-user-button"
-          type="button"
-          value="アカウントを追加する"
-        />
-      </form>
-      <table id="user-data-table"></table>
-    </main>
+            id="send-form-add-user-button"
+            type="button"
+            @click="sendFormAddUser"
+            value="アカウントを追加する"
+          />
+        </form>
+        <table id="user-data-table">
+          <thead>
+            <th>ID</th>
+            <th>名前</th>
+            <th>パスワード</th>
+            <th>状態</th>
+            <th>権限</th>
+          </thead>
+          <tbody>
+            <tr v-for="user in userList">
+              <td>{{ user.id }}</td>
+              <td>{{ user.name }}</td>
+              <td>{{ user.pass }}</td>
+              <td>{{ user.avail | availToString}}</td>
+              <td>{{ user.level }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </main>
+    </div>
   </body>
   <script type="module">
+    import Vue from 'https://cdn.jsdelivr.net/npm/vue@2.6.12/dist/vue.esm.browser.js'
     import { escapeHtml } from './js/main.js'
 
-    const availToString = (avail) => {
-      if (avail == 1) {
-        return '有効'
-      } else {
-        return '無効'
-      }
-    }
-    const reloadTable = async () => {
+    const getUserDataAsync = async () => {
       const cgiUrl = './cgi-bin/UserDBAccesser.cgi'
       const method = 'post'
 
@@ -105,65 +130,73 @@
         },
         body: JSON.stringify({ method: 'getAll' }),
       })
-      const userData = await response.json()
-      const userTableElement = document.querySelector('#user-data-table')
-      // テーブルの削除
-      while (userTableElement.firstChild)
-        userTableElement.removeChild(userTableElement.firstChild)
-      // ヘッダー生成
-      const userTableHeader =
-        '<tr><th>ID</th><th>名前</th><th>パスワード</th><th>状態</th><th>権限</th></tr>'
-      let tableHtml = userTableHeader
-      userTableElement.innerHTML = tableHtml
-      // 要素の生成
-      userData.users.forEach((user) => {
-        userTableElement.innerHTML +=
-          '<tr><td>' +
-          user.id +
-          '</td><td>' +
-          escapeHtml(user.name) +
-          '</td><td>********</td><td>' +
-          availToString(user.avail) +
-          '</td><td>' +
-          user.level +
-          '</td></tr>'
-      })
-      return
+      const userDataJsonObject = await response.json()
+      const userData = userDataJsonObject.users
+      return userData
     }
-    reloadTable()
-    const sendFormAddUser = async () => {
-      const cgiUrl = './cgi-bin/UserDBAccesser.cgi'
-      const method = 'post'
-      const addUserFormElement = document.querySelector('#add-user-form')
-      // ユーザー名
-      const name = addUserFormElement.name.value
-      // パスワード
-      const password = addUserFormElement.password.value
-      // 状態
-      const avail = addUserFormElement.avail.value
-      // 権限
-      const level = addUserFormElement.level.value
-      const sendAddUserJson = JSON.stringify({
-        method: 'add',
-        name: name,
-        pass: password,
-        avail: avail,
-        level: level,
-      })
-      const response = await fetch(cgiUrl, {
-        method: method,
-        headers: {
-          'Content-Type': 'application/json',
+
+    Vue.use([])
+    var app = new Vue({
+      el: '#app',
+      data: {
+        title: 'UserDBAccesser',
+        userList: [],
+        addUserForm: {
+          name: '',
+          pass: '',
+          avail: true,
+          level: 'ADMIN',
         },
-        body: sendAddUserJson,
-      })
-      const text = await response.text()
-      console.log(text)
-      reloadTable()
-      return
-    }
-    // アカウントを追加する処理をbuttonに登録
-    const button = document.querySelector('#send-form-add-user-button')
-    button.addEventListener('click', sendFormAddUser)
+      },
+      methods: {
+        check: function () {
+          console.log(JSON.stringify(this.addUserForm))
+        },
+        reloadTable: async function () {
+          const data = await getUserDataAsync()
+          this.userList = data
+        },
+        show: function () {
+          this.$modal.show('add-user-modal-area')
+        },
+        hide: function () {
+          this.$modal.hide('add-user-modal-area')
+        },
+        sendFormAddUser: async function () {
+          const cgiUrl = './cgi-bin/UserDBAccesser.cgi'
+          const method = 'post'
+          const sendAddUserJson = JSON.stringify({
+            method: 'add',
+            name: this.addUserForm.name,
+            pass: this.addUserForm.pass,
+            avail: this.addUserForm.avail.toString(),
+            level: this.addUserForm.level,
+          })
+          const response = await fetch(cgiUrl, {
+            method: method,
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: sendAddUserJson,
+          })
+          const text = await response.text()
+          console.log(text)
+          await this.reloadTable()
+          return
+        },
+      },
+      filters: {
+        availToString: function (avail) {
+          if (avail == 1) {
+            return '有効'
+          } else {
+            return '無効'
+          }
+        },
+      },
+      created: async function () {
+        await this.reloadTable()
+      },
+    })
   </script>
 </html>
