@@ -24,21 +24,21 @@
           required
         />
         <label>状態</label>
-        <label for="avail-ragio-true">
+        <label for="avail-radio-true">
           <input
             type="radio"
             name="avail"
             value="true"
-            id="avail-ragio-true"
+            id="avail-radio-true"
             v-model="addUserForm.avail"
           />有効
         </label>
-        <label for="avail-ragio-false">
+        <label for="avail-radio-false">
           <input
             type="radio"
             name="avail"
             value="false"
-            id="avail-ragio-false"
+            id="avail-radio-false"
             v-model="addUserForm.avail"
           />無効
         </label>
