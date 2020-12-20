@@ -86,54 +86,25 @@
           value="アカウントを追加する"
         />
       </form>
-      <table id="user-data-table">
-        <thead>
-          <th>ID</th>
-          <th>名前</th>
-          <th>パスワード</th>
-          <th>状態</th>
-          <th>権限</th>
-        </thead>
-        <tbody>
-          <tr v-for="user in userList" :key="user.id">
-            <td>{{ user.id }}</td>
-            <td>{{ user.name }}</td>
-            <td>{{ user.pass }}</td>
-            <td>{{ user.avail | availToString }}</td>
-            <td>{{ user.level }}</td>
-          </tr>
-        </tbody>
-      </table>
+      <UserInfoTable :userInfo="userInfo"></UserInfoTable>
     </main>
   </div>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
-
-interface User {
-  id: number
-  name: string
-  pass: string
-  avail: boolean
-  level: string
-}
+import UserInfoTable from '@/components/UserInfoTable.vue'
+import { User } from '@/model/user'
 
 @Component({
-  filters: {
-    availToString: function(avail: boolean) {
-      if (avail == true) {
-        return '有効'
-      } else {
-        return '無効'
-      }
-    }
+  components: {
+    UserInfoTable
   }
 })
 export default class App extends Vue {
   public title = 'UserDBAccesser'
   public readonly cgiUrl = '/cgi-bin/UserDBAccesser.cgi'
-  public userList: User[] = []
+  public userInfo: User[] = []
   public addUserForm: User = {
     id: -1,
     name: '',
@@ -158,7 +129,7 @@ export default class App extends Vue {
   }
   public async reloadTable(): Promise<void> {
     const data = await this.getUserDataAsync()
-    this.userList = data
+    this.userInfo = data
   }
   public async sendFormAddUser(): Promise<void> {
     const method = 'post'
@@ -203,27 +174,5 @@ export default class App extends Vue {
   background-color: white;
   padding: 10px;
   border: solid 5px #4472c4;
-}
-
-#user-data-table {
-  margin: 10px;
-  width: 80%;
-  border-collapse: collapse;
-  border: solid 2px gray;
-}
-
-#user-data-table th {
-  background-color: #4472c4;
-  color: #eeeeee;
-  padding: 2px;
-}
-
-#user-data-table td {
-  background-color: #cfd5ea;
-}
-
-#user-data-table th,
-#user-data-table td {
-  border: solid 1px #ffffff;
 }
 </style>
