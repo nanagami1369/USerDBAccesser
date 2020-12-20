@@ -189,9 +189,6 @@ export default class App extends Vue {
   public async created() {
     await this.reloadTable()
   }
-
-  public mounted() {
-  }
 }
 </script>
 
