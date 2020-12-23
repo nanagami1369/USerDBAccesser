@@ -4,88 +4,7 @@
       <h1>{{ title }}</h1>
     </header>
     <main>
-      <form id="add-user-form">
-        <h4>アカウントの追加</h4>
-        <label>名前</label>
-        <input
-          type="text"
-          name="name"
-          id="add-user-input-name"
-          v-model="addUserForm.name"
-          required
-        />
-        <label>パスワード(8文字以上)</label>
-        <input
-          type="password"
-          name="password"
-          pattern=".{8,}"
-          id="add-user-input-password"
-          v-model="addUserForm.pass"
-          required
-        />
-        <label>状態</label>
-        <label for="avail-radio-true">
-          <input
-            type="radio"
-            name="avail"
-            value="true"
-            id="avail-radio-true"
-            v-model="addUserForm.avail"
-          />有効
-        </label>
-        <label for="avail-radio-false">
-          <input
-            type="radio"
-            name="avail"
-            value="false"
-            id="avail-radio-false"
-            v-model="addUserForm.avail"
-          />無効
-        </label>
-        <label>権限</label>
-        <label for="level-radio-admin">
-          <input
-            type="radio"
-            name="level"
-            value="ADMIN"
-            id="level-radio-admin"
-            v-model="addUserForm.level"
-          />管理者
-        </label>
-        <label for="level-radio-prem">
-          <input
-            type="radio"
-            name="level"
-            value="PREM"
-            id="level-radio-prem"
-            v-model="addUserForm.level"
-          />プレミア
-        </label>
-        <label for="level-radio-gen">
-          <input
-            type="radio"
-            name="level"
-            value="GEN"
-            id="level-radio-gen"
-            v-model="addUserForm.level"
-          />一般
-        </label>
-        <label for="level-radio-try">
-          <input
-            type="radio"
-            name="level"
-            value="TRY"
-            id="level-radio-try"
-            v-model="addUserForm.level"
-          />お試し
-        </label>
-        <input
-          id="send-form-add-user-button"
-          type="button"
-          @click="sendFormAddUser"
-          value="アカウントを追加する"
-        />
-      </form>
+      <AddUserForm @submit="sendFormAddUser" />
       <UserInfoTable :userInfo="userInfo"></UserInfoTable>
     </main>
   </div>
@@ -94,24 +13,19 @@
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
 import UserInfoTable from '@/components/UserInfoTable.vue'
+import AddUserForm from '@/components/AddUserForm.vue'
 import { User } from '@/model/user'
 
 @Component({
   components: {
-    UserInfoTable
+    UserInfoTable,
+    AddUserForm
   }
 })
 export default class App extends Vue {
   public title = 'UserDBAccesser'
   public readonly cgiUrl = '/cgi-bin/UserDBAccesser.cgi'
   public userInfo: User[] = []
-  public addUserForm: User = {
-    id: -1,
-    name: '',
-    pass: '',
-    avail: true,
-    level: 'ADMIN'
-  }
 
   public async getUserDataAsync(): Promise<User[]> {
     const method = 'post'
@@ -140,14 +54,14 @@ export default class App extends Vue {
     const data = await this.getUserDataAsync()
     this.userInfo = data
   }
-  public async sendFormAddUser(): Promise<void> {
+  public async sendFormAddUser(addFormUser: User): Promise<void> {
     const method = 'post'
     const sendAddUserJson = JSON.stringify({
       method: 'add',
-      name: this.addUserForm.name,
-      pass: this.addUserForm.pass,
-      avail: this.addUserForm.avail.toString(),
-      level: this.addUserForm.level
+      name: addFormUser.name,
+      pass: addFormUser.pass,
+      avail: addFormUser.avail.toString(),
+      level: addFormUser.level
     })
     let response: Response
     try {
