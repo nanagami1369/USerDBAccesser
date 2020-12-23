@@ -133,7 +133,7 @@ export default class App extends Vue {
       return []
     }
     const userDataJsonObject = await response.json()
-    const userData = userDataJsonObject.users
+    const userData: User[] = userDataJsonObject.users
     return userData
   }
   public async reloadTable(): Promise<void> {
