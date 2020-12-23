@@ -35,7 +35,7 @@ import { User } from '@/model/user'
   }
 })
 export default class UserInfoTable extends Vue {
-  @Prop() private userInfo: User[] = []
+  @Prop() private userInfo!: User[]
 }
 </script>
 
