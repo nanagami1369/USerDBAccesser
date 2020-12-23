@@ -115,14 +115,23 @@ export default class App extends Vue {
 
   public async getUserDataAsync(): Promise<User[]> {
     const method = 'post'
-
-    const response = await fetch(this.cgiUrl, {
-      method: method,
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ method: 'getAll' })
-    })
+    let response: Response
+    try {
+      response = await fetch(this.cgiUrl, {
+        method: method,
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ method: 'getAll' })
+      })
+    } catch (error) {
+      alert(error)
+      return []
+    }
+    if (response.status === 404) {
+      alert('404 NotFound\nCGIが存在しません')
+      return []
+    }
     const userDataJsonObject = await response.json()
     const userData = userDataJsonObject.users
     return userData
@@ -140,21 +149,32 @@ export default class App extends Vue {
       avail: this.addUserForm.avail.toString(),
       level: this.addUserForm.level
     })
-    const response = await fetch(this.cgiUrl, {
-      method: method,
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: sendAddUserJson
-    })
-    const text = await response.text()
-    if (response.status == 201) {
-      console.log(text)
-    } else {
-      alert('追加に失敗しました。\n' + text)
+    let response: Response
+    try {
+      response = await fetch(this.cgiUrl, {
+        method: method,
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: sendAddUserJson
+      })
+    } catch (error) {
+      alert(error)
+      return
     }
-    await this.reloadTable()
-    return
+    const text = await response.text()
+    switch (response.status) {
+      case 404:
+        alert('404 NotFound\nCGIが存在しません')
+        return
+      case 201:
+        console.log(text)
+        await this.reloadTable()
+        return
+      default:
+        alert('追加に失敗しました。\n' + text)
+        return
+    }
   }
 
   public async created() {
