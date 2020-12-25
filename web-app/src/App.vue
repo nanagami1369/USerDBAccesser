@@ -15,6 +15,7 @@ import { Component, Vue } from 'vue-property-decorator'
 import UserInfoTable from '@/components/UserInfoTable.vue'
 import AddUserForm from '@/components/AddUserForm.vue'
 import { User } from '@/model/User'
+import { UserDBGateway } from '@/model/UserDBGateway'
 
 @Component({
   components: {
@@ -24,71 +25,16 @@ import { User } from '@/model/User'
 })
 export default class App extends Vue {
   public title = 'UserDBAccesser'
-  public readonly cgiUrl = '/cgi-bin/UserDBAccesser.cgi'
+  public gateway = new UserDBGateway()
   public userInfo: User[] = []
 
-  public async getUserDataAsync(): Promise<User[]> {
-    const method = 'post'
-    let response: Response
-    try {
-      response = await fetch(this.cgiUrl, {
-        method: method,
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ method: 'getAll' })
-      })
-    } catch (error) {
-      alert(error)
-      return []
-    }
-    if (response.status === 404) {
-      alert('404 NotFound\nCGIが存在しません')
-      return []
-    }
-    const userDataJsonObject = await response.json()
-    const userData: User[] = userDataJsonObject.users
-    return userData
-  }
   public async reloadTable(): Promise<void> {
-    const data = await this.getUserDataAsync()
+    const data = await this.gateway.getUserDataAsync()
     this.userInfo = data
   }
   public async sendFormAddUser(addFormUser: User): Promise<void> {
-    const method = 'post'
-    const sendAddUserJson = JSON.stringify({
-      method: 'add',
-      name: addFormUser.name,
-      pass: addFormUser.pass,
-      avail: addFormUser.avail.toString(),
-      level: addFormUser.level
-    })
-    let response: Response
-    try {
-      response = await fetch(this.cgiUrl, {
-        method: method,
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: sendAddUserJson
-      })
-    } catch (error) {
-      alert(error)
-      return
-    }
-    const text = await response.text()
-    switch (response.status) {
-      case 404:
-        alert('404 NotFound\nCGIが存在しません')
-        return
-      case 201:
-        console.log(text)
-        await this.reloadTable()
-        return
-      default:
-        alert('追加に失敗しました。\n' + text)
-        return
-    }
+    await this.gateway.sendFormAddUser(addFormUser)
+    await this.reloadTable()
   }
 
   public async created() {
