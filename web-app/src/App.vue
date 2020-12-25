@@ -3,13 +3,15 @@
     <header id="main-header" class="content">
       <h1 id="header-title">{{ title }}</h1>
       <div id="header-button-aria">
-        <button type="button" class="header-button">アカウントを追加</button>
+        <button type="button" class="header-button" @click="$modal.show('add-user-form-modal')">
+          アカウントを追加
+        </button>
         <button type="button" class="header-button">更新</button>
         <button type="button" class="header-button remove-button">削除</button>
       </div>
     </header>
     <main>
-      <AddUserForm @submit="sendFormAddUser" />
+      <AddUserFormModal @submit="sendFormAddUser" />
       <UserInfoTable :userInfo="userInfo"></UserInfoTable>
     </main>
   </div>
@@ -18,14 +20,14 @@
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
 import UserInfoTable from '@/components/UserInfoTable.vue'
-import AddUserForm from '@/components/AddUserForm.vue'
+import AddUserFormModal from '@/components/AddUserFormModal.vue'
 import { User } from '@/model/User'
 import { UserDBGateway } from '@/model/UserDBGateway'
 
 @Component({
   components: {
     UserInfoTable,
-    AddUserForm
+    AddUserFormModal
   }
 })
 export default class App extends Vue {
@@ -106,5 +108,9 @@ export default class App extends Vue {
   background-color: white;
   padding: 10px;
   border: solid 5px #4472c4;
+}
+
+.v--modal {
+  border-radius: 20px !important;
 }
 </style>
