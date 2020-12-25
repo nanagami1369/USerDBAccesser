@@ -89,7 +89,7 @@
 import { Component, Vue } from 'vue-property-decorator'
 import { ValidationProvider, ValidationObserver, extend } from 'vee-validate'
 import { required, min } from 'vee-validate/dist/rules'
-import { User } from '@/model/user'
+import { User } from '@/model/User'
 
 extend('positive', value => {
   return value >= 0

@@ -14,7 +14,7 @@
 import { Component, Vue } from 'vue-property-decorator'
 import UserInfoTable from '@/components/UserInfoTable.vue'
 import AddUserForm from '@/components/AddUserForm.vue'
-import { User } from '@/model/user'
+import { User } from '@/model/User'
 
 @Component({
   components: {

@@ -21,7 +21,7 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator'
-import { User } from '@/model/user'
+import { User } from '@/model/User'
 
 @Component({
   filters: {
