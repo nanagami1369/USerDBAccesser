@@ -10,7 +10,7 @@ CGIController::~CGIController() {
 }
 static void sendOK200Json(const nlohmann::json &json);
 static void sendCreated201TextMessage(const std::string &message);
-static void sendBadRequest400JsonMessage(const std::string &errorMessage);
+static void sendBadRequest400TextMessage(const std::string &errorMessage);
 
 std::string CGIController::getPostData() {
     //環境変数から送られたデータサイズを取得する
@@ -42,26 +42,26 @@ void CGIController::addUser(const nlohmann::json &addUserJson) {
     try {
         name = addUserJson["name"].get<std::string>();
         if (name.empty()) {
-            sendBadRequest400JsonMessage("名前に何も入力されてません 入力データ：{" + addUserJson.dump() + "}");
+            sendBadRequest400TextMessage("名前に何も入力されてません 入力データ：{" + addUserJson.dump() + "}");
             return;
         }
         rowPass = addUserJson["pass"].get<std::string>();
         if (rowPass.empty()) {
-            sendBadRequest400JsonMessage("パスワードに何も入力されてません 入力データ：{" + addUserJson.dump() + "}");
+            sendBadRequest400TextMessage("パスワードに何も入力されてません 入力データ：{" + addUserJson.dump() + "}");
             return;
         }
         if (rowPass.length() < 8) {
-            sendBadRequest400JsonMessage("パスワードは8文字以上にして下さい");
+            sendBadRequest400TextMessage("パスワードは8文字以上にして下さい");
             return;
         }
         avail = addUserJson["avail"].get<std::string>() == "true" ? true : false;
         auto stringlevel = addUserJson["level"].get<std::string>();
         level = stringToT_Level(stringlevel);
     } catch (const nlohmann::json::type_error &e) {
-        sendBadRequest400JsonMessage("必須パラメータが設定されてません 入力データ：{" + addUserJson.dump() + "}");
+        sendBadRequest400TextMessage("必須パラメータが設定されてません 入力データ：{" + addUserJson.dump() + "}");
         return;
     } catch (const std::invalid_argument &e) {
-        sendBadRequest400JsonMessage("存在しない権限が指定されました");
+        sendBadRequest400TextMessage("存在しない権限が指定されました");
         return;
     }
     db->add(name, rowPass, avail, level);
@@ -96,16 +96,13 @@ void CGIController::execMethod(const std::string &methodName, const nlohmann::js
     }
 }
 
-static void sendBadRequest400JsonMessage(const std::string &errorMessage) {
-    auto header = "Content-type: application/json; charset=utf-8\n"
+static void sendBadRequest400TextMessage(const std::string &errorMessage) {
+    auto header = "Content-type: text/plain; charset=utf-8\n"
                   "Status: 400 Bad Request\n"
                   "Pragma: no-cache\n"
                   "Cache-Control: no-cache\n\n";
-    nlohmann::json errjson = {
-        {"message", errorMessage},
-    };
     std::printf("%s", header);
-    std::printf("%s", errjson.dump().c_str());
+    std::printf("%s", errorMessage.c_str());
 }
 
 static void sendOK200Json(const nlohmann::json &json) {
@@ -134,7 +131,7 @@ void CGIController::exec() {
     try {
         inputData = getPostData();
     } catch (const std::invalid_argument &e) {
-        sendBadRequest400JsonMessage(e.what());
+        sendBadRequest400TextMessage(e.what());
         return;
     }
     // Jsonに変換
@@ -143,7 +140,7 @@ void CGIController::exec() {
         inputJson = nlohmann::json::parse(inputData);
     } catch (const nlohmann::json::parse_error &e) {
         std::string errMessage = "jsonのパースに失敗しました 入力データ:{" + inputData + "}";
-        sendBadRequest400JsonMessage(errMessage);
+        sendBadRequest400TextMessage(errMessage);
         return;
     }
     // リクエストの目的を確認
@@ -152,7 +149,7 @@ void CGIController::exec() {
         methodName = inputJson["method"].get<std::string>();
     } catch (const nlohmann::json::type_error &e) {
         std::string errMessage = "必須パラメータが設定されてません 入力データ{" + inputJson.dump() + "}";
-        sendBadRequest400JsonMessage(errMessage);
+        sendBadRequest400TextMessage(errMessage);
         return;
     }
     // 各種DB操作
