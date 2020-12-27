@@ -9,7 +9,7 @@ CGIController::~CGIController() {
     delete db;
 }
 static void sendOK200Json(const nlohmann::json &json);
-static void sendCreated201JsonMessage(const std::string &message);
+static void sendCreated201TextMessage(const std::string &message);
 static void sendBadRequest400JsonMessage(const std::string &errorMessage);
 
 std::string CGIController::getPostData() {
@@ -65,7 +65,7 @@ void CGIController::addUser(const nlohmann::json &addUserJson) {
         return;
     }
     db->add(name, rowPass, avail, level);
-    sendCreated201JsonMessage("アカウントが追加されました");
+    sendCreated201TextMessage("アカウントが追加されました");
 }
 
 void CGIController::getAllUser() {
@@ -118,17 +118,14 @@ static void sendOK200Json(const nlohmann::json &json) {
     std::printf("%s", json.dump().c_str());
 }
 
-static void sendCreated201JsonMessage(const std::string &message) {
-    auto header = "Content-type: application/json; charset=utf-8\n"
+static void sendCreated201TextMessage(const std::string &message) {
+    auto header = "Content-type: text/plain; charset=utf-8\n"
                   "Status: 201 Created\n"
                   "Access-Control-Allow-Methods: POST\n"
                   "Pragma: no-cache\n"
                   "Cache-Control: no-cache\n\n";
-    nlohmann::json responcejson = {
-        {"message", message},
-    };
     std::printf("%s", header);
-    std::printf("%s", responcejson.dump().c_str());
+    std::printf("%s", message.c_str());
 }
 
 void CGIController::exec() {
