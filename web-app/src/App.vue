@@ -142,10 +142,9 @@ export default class App extends Vue {
 }
 
 table {
-  margin: 10px;
-  width: 80%;
+  margin-top: 10px;
+  width: 100%;
   border-collapse: collapse;
-  border: solid 2px gray;
 }
 
 table th {
