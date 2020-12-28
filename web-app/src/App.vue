@@ -79,6 +79,9 @@ export default class App extends Vue {
   margin: 0;
   padding: 0;
 }
+.table-number {
+  text-align: right;
+}
 
 #main-header {
   display: flex;

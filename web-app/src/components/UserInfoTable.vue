@@ -15,7 +15,7 @@
         @addKey="add"
         @removeKey="remove"
       >
-        <td>{{ user.id }}</td>
+        <td class="table-number">{{ user.id }}</td>
         <td>{{ user.name }}</td>
         <td>{{ user.pass }}</td>
         <td>{{ user.avail | availToString }}</td>
