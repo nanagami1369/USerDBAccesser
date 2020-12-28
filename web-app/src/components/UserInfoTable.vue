@@ -38,27 +38,3 @@ export default class UserInfoTable extends Vue {
   @Prop() private userInfo!: User[]
 }
 </script>
-
-<style scoped>
-#user-data-table {
-  margin: 10px;
-  width: 80%;
-  border-collapse: collapse;
-  border: solid 2px gray;
-}
-
-#user-data-table th {
-  background-color: #4472c4;
-  color: #eeeeee;
-  padding: 2px;
-}
-
-#user-data-table td {
-  background-color: #cfd5ea;
-}
-
-#user-data-table th,
-#user-data-table td {
-  border: solid 1px #ffffff;
-}
-</style>

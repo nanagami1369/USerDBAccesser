@@ -113,4 +113,26 @@ export default class App extends Vue {
 .v--modal {
   border-radius: 20px !important;
 }
+
+table {
+  margin: 10px;
+  width: 80%;
+  border-collapse: collapse;
+  border: solid 2px gray;
+}
+
+table th {
+  background-color: #4472c4;
+  color: #eeeeee;
+  padding: 2px;
+}
+
+table td {
+  background-color: #cfd5ea;
+}
+
+table th,
+table td {
+  border: solid 1px #ffffff;
+}
 </style>
