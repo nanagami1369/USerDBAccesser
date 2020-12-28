@@ -8,19 +8,26 @@
       <th>権限</th>
     </thead>
     <tbody>
-      <tr v-for="user in userInfo" :key="user.id">
+      <SelectableTr
+        v-for="user in userInfo"
+        :key="user.id"
+        :selectKey="user.id"
+        @addKey="add"
+        @removeKey="remove"
+      >
         <td>{{ user.id }}</td>
         <td>{{ user.name }}</td>
         <td>{{ user.pass }}</td>
         <td>{{ user.avail | availToString }}</td>
         <td>{{ user.level }}</td>
-      </tr>
+      </SelectableTr>
     </tbody>
   </table>
 </template>
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator'
+import SelectableTr from '@/components/SelectableTr.vue'
 import { User } from '@/model/User'
 
 @Component({
@@ -32,9 +39,21 @@ import { User } from '@/model/User'
         return '無効'
       }
     }
+  },
+  components: {
+    SelectableTr
   }
 })
 export default class UserInfoTable extends Vue {
   @Prop() private userInfo!: User[]
+  private slectedIds: number[] = []
+  public add(key: string): void {
+    this.slectedIds.push(Number(key))
+    this.$emit('selectedChanged', this.slectedIds)
+  }
+  public remove(key: string): void {
+    this.slectedIds = this.slectedIds.filter(x => x !== Number(key))
+    this.$emit('selectedChanged', this.slectedIds)
+  }
 }
 </script>
