@@ -9,6 +9,7 @@ class CGIController {
     std::string getPostData();
     void execMethod(const std::string &methodName, const nlohmann::json &args);
     void addUser(const nlohmann::json &addUserJson);
+    void removeUsers(const nlohmann::json &removeUserJson);
     void getAllUser();
 
   public:

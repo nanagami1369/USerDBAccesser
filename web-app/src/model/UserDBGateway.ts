@@ -62,4 +62,37 @@ export class UserDBGateway {
         return
     }
   }
+
+  public async sendFormRemoveUsers(ids: number[]): Promise<void> {
+    const method = 'delete'
+    const sendRemoveUserJson = JSON.stringify({
+      method: 'remove',
+      ids: ids
+    })
+    let response: Response
+    try {
+      response = await fetch(this.cgiUrl, {
+        method: method,
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: sendRemoveUserJson
+      })
+    } catch (error) {
+      alert(error)
+      return
+    }
+    const text = await response.text()
+    switch (response.status) {
+      case 404:
+        alert('404 NotFound\nCGIが存在しません')
+        return
+      case 200:
+        console.log(text)
+        return
+      default:
+        alert('削除に失敗しました。\n' + text)
+        return
+    }
+  }
 }

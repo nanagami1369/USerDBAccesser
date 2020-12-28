@@ -10,6 +10,7 @@ CGIController::~CGIController() {
 }
 static void sendOK200Json(const nlohmann::json &json);
 static void sendCreated201TextMessage(const std::string &message);
+static void sendOk200DELETETextMessage(const std::string message);
 static void sendBadRequest400TextMessage(const std::string &errorMessage);
 
 std::string CGIController::getPostData() {
@@ -68,6 +69,41 @@ void CGIController::addUser(const nlohmann::json &addUserJson) {
     sendCreated201TextMessage("アカウントが追加されました");
 }
 
+void CGIController::removeUsers(const nlohmann::json &removeUserJson) {
+    auto ids = removeUserJson["ids"].get<std::vector<uint>>();
+    if (ids.empty()) {
+        sendBadRequest400TextMessage("アカウントが存在しませんでした");
+        return;
+    }
+
+    // 存在しないアカウントがあるかチェック
+    std::string message;
+    for (auto &id : ids) {
+        try {
+            db->searchById(id);
+        } catch (const std::range_error &e) {
+            message.append("ID - ");
+            message.append(std::to_string(id));
+            message.append(" アカウントが存在しませんでした\n");
+        }
+    }
+    if (!message.empty()) {
+        sendBadRequest400TextMessage(message);
+        return;
+    }
+    // 削除処理
+    for (auto &id : ids) {
+        try {
+            db->remove(id);
+        } catch (const std::range_error &e) {
+            sendBadRequest400TextMessage(e.what());
+            return;
+        }
+    }
+    sendOk200DELETETextMessage("選択された全てのアカウントを削除しました" + message);
+    return;
+}
+
 void CGIController::getAllUser() {
     auto allUsers = db->GetAllUserData();
     std::vector<nlohmann::json> usersJson;
@@ -89,6 +125,9 @@ void CGIController::getAllUser() {
 void CGIController::execMethod(const std::string &methodName, const nlohmann::json &args) {
     if (methodName == "add") {
         addUser(args);
+        return;
+    } else if (methodName == "remove") {
+        removeUsers(args);
         return;
     } else if (methodName == "getAll") {
         getAllUser();
@@ -119,6 +158,16 @@ static void sendCreated201TextMessage(const std::string &message) {
     auto header = "Content-type: text/plain; charset=utf-8\n"
                   "Status: 201 Created\n"
                   "Access-Control-Allow-Methods: POST\n"
+                  "Pragma: no-cache\n"
+                  "Cache-Control: no-cache\n\n";
+    std::printf("%s", header);
+    std::printf("%s", message.c_str());
+}
+
+static void sendOk200DELETETextMessage(const std::string message) {
+    auto header = "Content-type: text/plain; charset=utf-8\n"
+                  "Status: 200 OK\n"
+                  "Access-Control-Allow-Methods: DELETE\n"
                   "Pragma: no-cache\n"
                   "Cache-Control: no-cache\n\n";
     std::printf("%s", header);

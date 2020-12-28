@@ -7,12 +7,14 @@
           アカウントを追加
         </button>
         <button type="button" class="header-button">更新</button>
-        <button type="button" class="header-button remove-button">削除</button>
+        <button type="button" class="header-button remove-button" @click="sendFormRemoveUser">
+          選択したアカウントを削除
+        </button>
       </div>
     </header>
     <main>
       <AddUserFormModal @submit="sendFormAddUser" />
-      <UserInfoTable :userInfo="userInfo"></UserInfoTable>
+      <UserInfoTable :userInfo="userInfo" @selectedChanged="selectedChange" />
     </main>
   </div>
 </template>
@@ -34,7 +36,7 @@ export default class App extends Vue {
   public title = 'UserDBAccesser'
   public gateway = new UserDBGateway()
   public userInfo: User[] = []
-
+  public selectedIds: number[] = []
   public async reloadTable(): Promise<void> {
     const data = await this.gateway.getUserDataAsync()
     this.userInfo = data
@@ -42,6 +44,28 @@ export default class App extends Vue {
   public async sendFormAddUser(addFormUser: User): Promise<void> {
     await this.gateway.sendFormAddUser(addFormUser)
     await this.reloadTable()
+  }
+
+  public async sendFormRemoveUser(): Promise<void> {
+    if (this.selectedIds.length === 0) {
+      alert('アカウントが選択されていません')
+      return
+    }
+    let message = '以下のアカウントを削除します\nよろしいですか？\n\n'
+    this.selectedIds.forEach(selectedId => {
+      const user = this.userInfo.find(x => x.id === selectedId)
+      if (user !== undefined) {
+        message += `id : ${user.id} , name : ${user.name}\n`
+      }
+    })
+    if (confirm(message)) {
+      await this.gateway.sendFormRemoveUsers(this.selectedIds)
+      await this.reloadTable()
+    }
+  }
+
+  public selectedChange(selectedIds: number[]): void {
+    this.selectedIds = selectedIds
   }
 
   public async created() {
