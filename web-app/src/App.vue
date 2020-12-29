@@ -83,6 +83,10 @@ export default class App extends Vue {
   text-align: right;
 }
 
+.table-other-content {
+  text-align: center;
+}
+
 #main-header {
   display: flex;
   flex-flow: row nowrap;

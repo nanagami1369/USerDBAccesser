@@ -1,11 +1,12 @@
 <template>
   <table id="user-data-table">
     <thead>
-      <th>ID</th>
-      <th>名前</th>
-      <th>パスワード</th>
-      <th>状態</th>
-      <th>権限</th>
+      <th class="id-column">ID</th>
+      <th class="name-column">名前</th>
+      <th class="password-column">パスワード</th>
+      <th class="avail-column">状態</th>
+      <th class="level-column">権限</th>
+      <th><!--余白--></th>
     </thead>
     <tbody>
       <SelectableTr
@@ -18,8 +19,9 @@
         <td class="table-number">{{ user.id }}</td>
         <td>{{ user.name }}</td>
         <td>{{ user.pass }}</td>
-        <td>{{ user.avail | availToString }}</td>
-        <td>{{ user.level }}</td>
+        <td class="table-other-content">{{ user.avail | availToString }}</td>
+        <td class="table-other-content">{{ user.level }}</td>
+        <td><!--余白--></td>
       </SelectableTr>
     </tbody>
   </table>
@@ -57,3 +59,24 @@ export default class UserInfoTable extends Vue {
   }
 }
 </script>
+<style scoped>
+.id-column {
+  width: 4rem;
+}
+
+.name-column {
+  width: 30%;
+}
+
+.password-column {
+  width: 7rem;
+}
+
+.avail-column {
+  width: 3rem;
+}
+
+.level-column {
+  width: 5rem;
+}
+</style>
