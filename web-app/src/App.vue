@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <header id="main-header" class="content">
+    <header id="main-header">
       <h1 id="header-title">{{ title }}</h1>
       <div id="header-button-aria">
         <button type="button" class="header-button" @click="$modal.show('add-user-form-modal')">
@@ -92,6 +92,10 @@ export default class App extends Vue {
   flex-flow: row nowrap;
   justify-content: space-between;
   align-items: center;
+  margin: 5px;
+  background-color: white;
+  padding: 10px;
+  border: solid 5px #4472c4;
 }
 
 #header-title {
@@ -132,13 +136,6 @@ export default class App extends Vue {
 .remove-button:active {
   border-color: #ed7d31;
   background-color: #eb965e;
-}
-
-.content {
-  margin: 5px;
-  background-color: white;
-  padding: 10px;
-  border: solid 5px #4472c4;
 }
 
 .v--modal {
