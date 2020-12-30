@@ -164,5 +164,6 @@ table td {
 table th,
 table td {
   border: solid 1px #ffffff;
+  padding: 0px 10px;
 }
 </style>
