@@ -78,14 +78,10 @@
             />お試し
           </label>
         </div>
-        <input
-          id="send-form-add-user-button"
-          type="button"
-          @click="submit"
-          value="アカウントを追加する"
-          :disabled="invalid"
-        />
-        <p v-show="invalid" class="error-message">入力ミスがあります。</p>
+        <button id="send-form-add-user-button" type="button" @click="submit" :disabled="invalid">
+          アカウントを追加する
+        </button>
+        <p v-show="invalid" class="error-message">入力ミスがあります</p>
       </form>
     </ValidationObserver>
   </modal>
@@ -138,6 +134,14 @@ export default class AddUserFormModal extends Vue {
   display: flex;
   flex-direction: column;
   margin: 10px;
+}
+#send-form-add-user-button {
+  font-size: 1em;
+  margin: 0.5rem 5rem;
+}
+
+#send-form-add-user-button:disabled {
+  background-color: gray;
 }
 
 .error-message {
