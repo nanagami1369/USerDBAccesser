@@ -117,15 +117,6 @@ export default class App extends Vue {
   font-size: 1.4em;
   padding: 0.2em 0.8em;
   margin: 0px 5px;
-  color: #ffffff;
-  background-color: #4472c4;
-  border-color: #2f528f;
-  border-radius: 5px;
-}
-
-.header-button:active {
-  background-color: #5b81c4;
-  border-color: #4472c4;
 }
 
 .remove-button {
@@ -140,6 +131,18 @@ export default class App extends Vue {
 
 .v--modal {
   border-radius: 20px !important;
+}
+
+button {
+  color: #ffffff;
+  background-color: #4472c4;
+  border-color: #2f528f;
+  border-radius: 5px;
+}
+
+button:active {
+  background-color: #5b81c4;
+  border-color: #4472c4;
 }
 
 table {
