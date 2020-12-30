@@ -18,7 +18,7 @@
       >
         <td class="table-number">{{ user.id }}</td>
         <td>{{ user.name }}</td>
-        <td>{{ user.pass }}</td>
+        <td>*******</td>
         <td class="table-other-content">{{ user.avail | availToString }}</td>
         <td class="table-other-content">{{ user.level }}</td>
         <td><!--余白--></td>
