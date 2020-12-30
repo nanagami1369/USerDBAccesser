@@ -4,12 +4,12 @@
       <form id="add-user-form">
         <h4>アカウントの追加</h4>
         <label for="add-user-input-name">名前 </label>
-        <ValidationProvider rules="required" v-slot="{ errors }">
+        <ValidationProvider :immediate="true" rules="required" v-slot="{ errors }">
           <input type="text" name="名前" id="add-user-input-name" v-model="addFormUser.name" />
           <span>{{ errors[0] }}</span>
         </ValidationProvider>
         <label for="add-user-input-password">パスワード(8文字以上)</label>
-        <ValidationProvider rules="required|min:8" v-slot="{ errors }">
+        <ValidationProvider :immediate="true" rules="required|min:8" v-slot="{ errors }">
           <input
             type="password"
             name="パスワード"
