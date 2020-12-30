@@ -6,7 +6,7 @@
         <label for="add-user-input-name">名前 </label>
         <ValidationProvider :immediate="true" rules="required" v-slot="{ errors }">
           <input type="text" name="名前" id="add-user-input-name" v-model="addFormUser.name" />
-          <span>{{ errors[0] }}</span>
+          <span class="error-message">{{ errors[0] }}</span>
         </ValidationProvider>
         <label for="add-user-input-password">パスワード(8文字以上)</label>
         <ValidationProvider :immediate="true" rules="required|min:8" v-slot="{ errors }">
@@ -16,7 +16,7 @@
             id="add-user-input-password"
             v-model="addFormUser.pass"
           />
-          <span>{{ errors[0] }}</span>
+          <span class="error-message">{{ errors[0] }}</span>
         </ValidationProvider>
         <label>状態</label>
         <div id="avail-radio-button-aria">
@@ -143,7 +143,8 @@ export default class AddUserFormModal extends Vue {
 .error-message {
   text-decoration: underline;
 }
-.error-message::before {
+.error-message:not(:empty)::before {
   content: '※ ';
+  color: red;
 }
 </style>
