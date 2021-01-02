@@ -14,6 +14,9 @@
     </header>
     <main>
       <AddUserFormModal @submit="sendFormAddUser" />
+      <div id="userInfo-data-aria">
+        <p>表示数：{{ userInfo.length }}</p>
+      </div>
       <UserInfoTable :userInfo="userInfo" @selectedChanged="selectedChange" />
     </main>
   </div>
@@ -131,6 +134,12 @@ export default class App extends Vue {
 
 .v--modal {
   border-radius: 20px !important;
+}
+
+#userInfo-data-aria {
+  display: flex;
+  font-size: 1.2em;
+  margin-left: 10px;
 }
 
 button {
