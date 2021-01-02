@@ -19,7 +19,12 @@
       <SearchUserFormModal @submit="sendFormSearchUserData" />
       <div id="userInfo-data-aria">
         <p>表示数：{{ userInfo.length }}</p>
-        <button type="button" @click="reloadTable">検索条件をリセットする</button>
+        <div v-if="SearchConditionsMessageIsNotEmpty" id="search-conditions">
+          検索条件：{{ SearchConditionsMessage }}アカウント
+          <button id="reset-search-conditions-button" @click="reloadTable">
+            検索条件をリセットする
+          </button>
+      </div>
       </div>
       <UserInfoTable :userInfo="userInfo" @selectedChanged="selectedChange" />
     </main>
@@ -46,10 +51,37 @@ export default class App extends Vue {
   public gateway = new UserDBGateway()
   public userInfo: User[] = []
   public selectedIds: number[] = []
+
+  public SearchConditionsMessage?: string = ''
+
+  public get SearchConditionsMessageIsNotEmpty(): boolean {
+    return this.SearchConditionsMessage !== undefined && this.SearchConditionsMessage.length !== 0
+  }
+
+  private SearchUserDataToString(searchUserData: SearchUserData): string {
+    let message = ''
+    if (searchUserData.name.length !== 0) {
+      message += ` 「${searchUserData.name}」を含む `
+    }
+    if (searchUserData.avail !== 'null') {
+      const availString = searchUserData.avail === 'true' ? '有効' : '無効'
+      message += ` ${availString}な `
+    }
+    if (searchUserData.level !== 'null') {
+      message += ` ${searchUserData.level} `
+    }
+    if (message.length === 0) {
+      return ''
+    }
+    return message
+  }
+  
   public async reloadTable(): Promise<void> {
     const data = await this.gateway.getUserDataAsync()
     this.userInfo = data
+    this.SearchConditionsMessage = ''
   }
+
   public async sendFormAddUser(addFormUser: User): Promise<void> {
     await this.gateway.sendFormAddUser(addFormUser)
     await this.reloadTable()
@@ -78,6 +110,7 @@ export default class App extends Vue {
     // 検索結果があれば反映
     if (searchedUsers.length !== 0) {
       this.userInfo = searchedUsers
+      this.SearchConditionsMessage = this.SearchUserDataToString(searchUserData)
     }
   }
 
@@ -154,6 +187,14 @@ export default class App extends Vue {
   display: flex;
   font-size: 1.2em;
   margin-left: 10px;
+}
+
+#search-conditions {
+  border: solid #2f528f 2px;
+  padding: 0.1em 0.2em;
+  margin: 0px 0.2em;
+  border-radius: 10px;
+  font-size: 0.7em;
 }
 
 button {
