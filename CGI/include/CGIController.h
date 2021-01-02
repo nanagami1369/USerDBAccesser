@@ -10,6 +10,7 @@ class CGIController {
     void execMethod(const std::string &methodName, const nlohmann::json &args);
     void addUser(const nlohmann::json &addUserJson);
     void removeUsers(const nlohmann::json &removeUserJson);
+    void searchUsers(const nlohmann::json &searchUserDataJson);
     void getAllUser();
 
   public:

@@ -104,6 +104,72 @@ void CGIController::removeUsers(const nlohmann::json &removeUserJson) {
     return;
 }
 
+void CGIController::searchUsers(const nlohmann::json &searchUserDataJson) {
+    auto name = searchUserDataJson["name"].get<std::string>();
+    auto avail = searchUserDataJson["avail"].get<std::string>();
+    auto level = searchUserDataJson["level"].get<std::string>();
+    // 一番最初に指定された条件でDBに検索をかける。
+    // ２つ目以降の条件はクライアント側で処理をする。
+    // 何も条件を指定されなかった場合は0件返す
+    std::vector<nlohmann::json> usersJson;
+
+    if (name.length() != 0) {
+        try {
+            // 名前で検索
+            auto users = this->db->searchByName(name);
+            for (auto &user : users) {
+                nlohmann::json userJson = {
+                    {"id", user.ID},
+                    {"name", user.Name},
+                    {"pass", "********"},
+                    {"avail", std::to_string(user.Avail)},
+                    {"level", t_LevelToString(user.Level)}};
+                usersJson.push_back(userJson);
+            }
+        } catch (const std::range_error &e) {
+            // 検索数が0件なら0件で返す
+        }
+    } else if (avail != "null") {
+        // 状態で検索
+        try {
+            auto users = this->db->searchByAvail(avail == "true" ? true : false);
+            for (auto &user : users) {
+                nlohmann::json userJson = {
+                    {"id", user.ID},
+                    {"name", user.Name},
+                    {"pass", "********"},
+                    {"avail", std::to_string(user.Avail)},
+                    {"level", t_LevelToString(user.Level)}};
+                usersJson.push_back(userJson);
+            }
+        } catch (const std::range_error &e) {
+            // 検索数が0件なら0件で返す
+        }
+    } else if (level != "null") {
+        // 権限で検索
+        try {
+            auto users = this->db->searchByLevel(stringToT_Level(level));
+            for (auto &user : users) {
+                nlohmann::json userJson = {
+                    {"id", user.ID},
+                    {"name", user.Name},
+                    {"pass", "********"},
+                    {"avail", std::to_string(user.Avail)},
+                    {"level", t_LevelToString(user.Level)}};
+                usersJson.push_back(userJson);
+            }
+        } catch (const std::range_error &e) {
+            // 検索数が0件なら0件で返す
+        }
+    } else {
+        // 検索条件が設定されていない場合0件で返す
+    }
+    nlohmann::json searchUsersJson = {
+        {"users", usersJson}};
+    sendOK200Json(searchUsersJson);
+    return;
+}
+
 void CGIController::getAllUser() {
     auto allUsers = db->GetAllUserData();
     std::vector<nlohmann::json> usersJson;
@@ -129,6 +195,8 @@ void CGIController::execMethod(const std::string &methodName, const nlohmann::js
     } else if (methodName == "remove") {
         removeUsers(args);
         return;
+    } else if (methodName == "search") {
+        searchUsers(args);
     } else if (methodName == "getAll") {
         getAllUser();
         return;
