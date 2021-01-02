@@ -161,7 +161,7 @@ std::vector<User> MySQLUserDB::searchByLevelInternalDatabase(const t_Level level
     try {
         auto stmt = std::unique_ptr<sql::Statement>(connect->createStatement());
         stmt->execute("USE " + mysqlDatabase);
-        auto pStmt = std::unique_ptr<sql::PreparedStatement>(connect->prepareStatement("SELECT * from user WHERE name LIKE ?"));
+        auto pStmt = std::unique_ptr<sql::PreparedStatement>(connect->prepareStatement("SELECT * from user WHERE level=?"));
         pStmt->setUInt(1, level);
         auto result = std::unique_ptr<sql::ResultSet>(pStmt->executeQuery());
         while (result->next()) {
