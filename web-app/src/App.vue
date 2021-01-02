@@ -6,7 +6,9 @@
         <button type="button" class="header-button" @click="$modal.show('add-user-form-modal')">
           アカウントを追加
         </button>
-        <button type="button" class="header-button">更新</button>
+        <button type="button" class="header-button" @click="$modal.show('search-user-form-modal')">
+          検索
+        </button>
         <button type="button" class="header-button remove-button" @click="sendFormRemoveUser">
           選択したアカウントを削除
         </button>
@@ -14,8 +16,10 @@
     </header>
     <main>
       <AddUserFormModal @submit="sendFormAddUser" />
+      <SearchUserFormModal @submit="sendFormSearchUserData" />
       <div id="userInfo-data-aria">
         <p>表示数：{{ userInfo.length }}</p>
+        <button type="button" @click="reloadTable">検索条件をリセットする</button>
       </div>
       <UserInfoTable :userInfo="userInfo" @selectedChanged="selectedChange" />
     </main>
@@ -26,13 +30,15 @@
 import { Component, Vue } from 'vue-property-decorator'
 import UserInfoTable from '@/components/UserInfoTable.vue'
 import AddUserFormModal from '@/components/AddUserFormModal.vue'
+import SearchUserFormModal from '@/components/SearchUserFormModal.vue'
 import { User } from '@/model/User'
 import { UserDBGateway } from '@/model/UserDBGateway'
-
+import { SearchUserData } from '@/model/SearchUserData'
 @Component({
   components: {
     UserInfoTable,
-    AddUserFormModal
+    AddUserFormModal,
+    SearchUserFormModal
   }
 })
 export default class App extends Vue {
@@ -64,6 +70,14 @@ export default class App extends Vue {
     if (confirm(message)) {
       await this.gateway.sendFormRemoveUsers(this.selectedIds)
       await this.reloadTable()
+    }
+  }
+
+  public async sendFormSearchUserData(searchUserData: SearchUserData) {
+    const searchedUsers = await this.gateway.sendSearchUserData(searchUserData)
+    // 検索結果があれば反映
+    if (searchedUsers.length !== 0) {
+      this.userInfo = searchedUsers
     }
   }
 
