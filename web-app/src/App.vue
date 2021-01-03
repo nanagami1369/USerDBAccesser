@@ -64,7 +64,7 @@ export default class App extends Vue {
       message += ` 「${searchUserData.name}」を含む `
     }
     if (searchUserData.avail !== 'null') {
-      const availString = searchUserData.avail === 'true' ? '有効' : '無効'
+      const availString = AvailToPrintString(searchUserData.avail)
       message += ` ${availString}な `
     }
     if (searchUserData.level !== 'null') {

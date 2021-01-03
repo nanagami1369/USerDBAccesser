@@ -20,7 +20,7 @@
         <td>{{ user.name }}</td>
         <td>*******</td>
         <td class="table-other-content">{{ user.avail | availToString }}</td>
-        <td class="table-other-content">{{ user.level }}</td>
+        <td class="table-other-content">{{ user.level | levelToString }}</td>
         <td><!--余白--></td>
       </SelectableTr>
     </tbody>
@@ -31,15 +31,15 @@
 import { Component, Prop, Vue } from 'vue-property-decorator'
 import SelectableTr from '@/components/SelectableTr.vue'
 import { User } from '@/model/User'
+import { AvailToPrintString, LevelToPrintString } from '@/model/PrintString'
 
 @Component({
   filters: {
     availToString: function(avail: boolean) {
-      if (avail == true) {
-        return '有効'
-      } else {
-        return '無効'
-      }
+      return AvailToPrintString(avail)
+    },
+    levelToString: function(level: string) {
+      return LevelToPrintString(level)
     }
   },
   components: {
