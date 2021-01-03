@@ -98,7 +98,7 @@ extend('positive', value => {
 })
 extend('min', {
   ...min,
-  message: '{_field_}が短すぎます{length}文字以上にしてください'
+  message: '{_field_}は、{length}文字以上にして下さい'
 })
 extend('required', {
   ...required,
