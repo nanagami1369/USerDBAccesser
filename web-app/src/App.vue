@@ -59,7 +59,7 @@ export default class App extends Vue {
   public title = 'UserDBAccesser'
   public gateway = new UserDBGateway()
   public userInfo: User[] = []
-  public selectedIds: number[] = []
+  public selectedIds: Set<number> = new Set<number>()
 
   public updatedUser?: User = {
     id: -1,
@@ -110,19 +110,25 @@ export default class App extends Vue {
   }
 
   public async sendFormRemoveUser(): Promise<void> {
-    if (this.selectedIds.length === 0) {
+    if (this.selectedIds.size === 0) {
       alert('アカウントが選択されていません')
       return
     }
-    let message = '以下のアカウントを削除します\nよろしいですか？\n\n'
+    let message = ''
+    // 表示中のデータに選択されたデータがなかった場合無視する
     this.selectedIds.forEach(selectedId => {
       const user = this.userInfo.find(x => x.id === selectedId)
       if (user !== undefined) {
         message += `id : ${user.id} , name : ${user.name}\n`
       }
     })
-    if (confirm(message)) {
-      await this.gateway.sendFormRemoveUsers(this.selectedIds)
+    // 一件も表示されていなかった場合終了
+    if (message.length === 0) {
+      alert('アカウントが選択されていません')
+      return
+    }
+    if (confirm('以下のアカウントを削除します\nよろしいですか？\n\n' + message)) {
+      await this.gateway.sendFormRemoveUsers(Array.from(this.selectedIds))
       await this.reloadTable()
     }
   }
@@ -140,7 +146,7 @@ export default class App extends Vue {
     this.updatedUser = updatedUser
     this.$modal.show('update-user-form-modal')
   }
-  public selectedChange(selectedIds: number[]): void {
+  public selectedChange(selectedIds: Set<number>): void {
     this.selectedIds = selectedIds
   }
 

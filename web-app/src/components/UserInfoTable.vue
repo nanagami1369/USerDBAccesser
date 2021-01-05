@@ -52,13 +52,13 @@ import { AvailToPrintString, LevelToPrintString } from '@/model/PrintString'
 })
 export default class UserInfoTable extends Vue {
   @Prop() private userInfo!: User[]
-  private slectedIds: number[] = []
+  private slectedIds: Set<number> = new Set<number>()
   public add(key: string): void {
-    this.slectedIds.push(Number(key))
+    this.slectedIds.add(Number(key))
     this.$emit('selectedChanged', this.slectedIds)
   }
   public remove(key: string): void {
-    this.slectedIds = this.slectedIds.filter(x => x !== Number(key))
+    this.slectedIds.delete(Number(key))
     this.$emit('selectedChanged', this.slectedIds)
   }
 
