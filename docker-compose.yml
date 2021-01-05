@@ -6,6 +6,7 @@ services:
       - 3306:3306
     networks:
       - user_net
+    command: mysqld --character-set-server=utf8mb4  --collation-server=utf8mb4_general_ci
     environment:
       MYSQL_ROOT_PASSWORD: iGIGIUgliuiuGIUGilugfsuag
       MYSQL_USER: mysqluser
