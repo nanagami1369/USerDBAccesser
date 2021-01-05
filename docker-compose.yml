@@ -20,6 +20,8 @@ services:
       - user_net
     ports:
       - 8080:80
+    depends_on:
+      - mysql
     environment:
       MYSQL_HOST: mysql:3306
       MYSQL_USER: mysqluser
