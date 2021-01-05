@@ -44,6 +44,15 @@
               v-model="updateFormUser.avail"
             />無効
           </label>
+          <label for="avail-radio-none">
+            <input
+              type="radio"
+              name="avail"
+              value="null"
+              id="avail-radio-none"
+              v-model="updateFormUser.avail"
+            />状態を変更しない
+          </label>
         </div>
         <label>権限</label>
         <p>現在の権限：{{ OriginalUser.level | levelToString }}</p>
@@ -84,6 +93,15 @@
               v-model="updateFormUser.level"
             />お試し
           </label>
+          <label for="level-radio-none">
+            <input
+              type="radio"
+              name="level"
+              value="null"
+              id="level-radio-none"
+              v-model="updateFormUser.level"
+            />権限を変更しない
+          </label>
         </div>
         <button id="send-form-update-user-button" type="button" @click="submit" :disabled="invalid">
           アカウントを更新する
@@ -100,6 +118,15 @@ import { ValidationProvider, ValidationObserver, extend } from 'vee-validate'
 import { required } from 'vee-validate/dist/rules'
 import { User } from '@/model/User'
 import { AvailToPrintString, LevelToPrintString } from '@/model/PrintString'
+
+interface UpdateFormUser {
+  id: number
+  name: string
+  pass: string
+  avail: 'null' | 'true' | 'false'
+  level: 'null' | 'ADMIN' | 'PREM' | 'GEN' | 'TRY'
+}
+
 extend('emptyOrMin8', {
   validate: (value: string) => value.length === 0 || value.length >= 8,
   message: '{_field_}は、8文字以上にして下さい'
@@ -122,28 +149,29 @@ extend('required', {
 export default class UpdateUserFormModal extends Vue {
   @Prop() public OriginalUser?: User
 
-  public updateFormUser: User = {
+  public updateFormUser: UpdateFormUser = {
     id: -1,
     name: '',
     pass: '',
-    avail: true,
-    level: 'ADMIN'
+    avail: 'null',
+    level: 'null'
   }
 
   public submit() {
+    if (this.OriginalUser === undefined) {
+      alert('アップデート元のデータがありません')
+      return
+    }
+
     // id
     let id = -1
-    if (this.OriginalUser?.id !== undefined) {
-      id = this.OriginalUser.id
-    }
+    id = this.OriginalUser.id
     // 名前
     let name = ''
     if (this.updateFormUser.name.length !== 0) {
       name = this.updateFormUser.name
     } else {
-      if (this.OriginalUser?.name !== undefined) {
-        name = this.OriginalUser?.name
-      }
+      name = this.OriginalUser.name
     }
     // パスワード
     let password = ''
@@ -151,8 +179,19 @@ export default class UpdateUserFormModal extends Vue {
       password = this.updateFormUser.pass
     }
     // 状態
-    const avail = this.updateFormUser.avail
-    const level = this.updateFormUser.level
+    let avail = false
+    if (this.updateFormUser.avail !== 'null') {
+      avail = this.updateFormUser.avail === 'true' ? true : false
+    } else {
+      avail = this.OriginalUser.avail
+    }
+    // 権限
+    let level = 'ADMIN'
+    if (this.updateFormUser.level !== 'null') {
+      level = this.updateFormUser.level
+    } else {
+      level = this.OriginalUser.level
+    }
     const sendUpdatedUser: User = {
       id: id,
       name: name,
@@ -165,8 +204,8 @@ export default class UpdateUserFormModal extends Vue {
       id: -1,
       name: '',
       pass: '',
-      avail: false,
-      level: 'ADMIN'
+      avail: 'null',
+      level: 'null'
     }
     this.$modal.hide('update-user-form-modal')
   }
