@@ -6,6 +6,8 @@ services:
       - 3306:3306
     networks:
       - user_net
+    volumes:
+      - db_volume:/var/lib/mysql
     command: mysqld --character-set-server=utf8mb4  --collation-server=utf8mb4_general_ci
     environment:
       MYSQL_ROOT_PASSWORD: iGIGIUgliuiuGIUGilugfsuag
@@ -31,3 +33,7 @@ services:
 networks:
   user_net:
     driver: bridge
+
+volumes:
+  db_volume:
+    driver: local
