@@ -216,28 +216,32 @@ void MySQLUserDB::updateInternalDatabase(
         throw;
     }
     // アカウントがなければ、例外を返却
-    std::string pass;
     try {
-        auto user = searchById(updateUserId);
-        // hashedPassが空文字でなければ、パスワードを変更
-        if (hashedPass.empty()) {
-            pass = user.Pass;
-        } else {
-            pass = hashedPass;
-        }
+        searchById(updateUserId);
     } catch (const std::range_error &e) {
         throw;
     }
     try {
         auto stmt = std::unique_ptr<sql::Statement>(connect->createStatement());
         stmt->execute("USE " + mysqlDatabase);
-        auto pStmt = std::unique_ptr<sql::PreparedStatement>(
-            connect->prepareStatement("UPDATE user SET name = ? , password = ? , avail = ? , level = ? WHERE id = ? LIMIT 1"));
-        pStmt->setString(1, name);
-        pStmt->setString(2, pass);
-        pStmt->setBoolean(3, avail);
-        pStmt->setUInt(4, level);
-        pStmt->setUInt(5, updateUserId);
+        std::unique_ptr<sql::PreparedStatement> pStmt;
+        // hashedPassが空文字ならパスワードを変更しない
+        if (hashedPass.empty()) {
+            pStmt = std::unique_ptr<sql::PreparedStatement>(
+                connect->prepareStatement("UPDATE user SET name = ? , avail = ? , level = ? WHERE id = ? LIMIT 1"));
+            pStmt->setString(1, name);
+            pStmt->setBoolean(2, avail);
+            pStmt->setUInt(3, level);
+            pStmt->setUInt(4, updateUserId);
+        } else {
+            pStmt = std::unique_ptr<sql::PreparedStatement>(
+                connect->prepareStatement("UPDATE user SET name = ? , password = ? , avail = ? , level = ? WHERE id = ? LIMIT 1"));
+            pStmt->setString(1, name);
+            pStmt->setString(2, hashedPass);
+            pStmt->setBoolean(3, avail);
+            pStmt->setUInt(4, level);
+            pStmt->setUInt(5, updateUserId);
+        }
         pStmt->execute();
     } catch (const sql::SQLException &e) {
         std::string message = "Mysqlにエラーが発生しました:";

@@ -9,6 +9,7 @@ CGIController::~CGIController() {
     delete db;
 }
 static void sendOK200Json(const nlohmann::json &json);
+static void sendOK200TextMessage(const std::string &message);
 static void sendCreated201TextMessage(const std::string &message);
 static void sendOk200DELETETextMessage(const std::string message);
 static void sendBadRequest400TextMessage(const std::string &errorMessage);
@@ -170,6 +171,36 @@ void CGIController::searchUsers(const nlohmann::json &searchUserDataJson) {
     return;
 }
 
+void CGIController::updateUser(const nlohmann::json &updateUserJson) {
+    uint id;
+    std::string name;
+    std::string rowPass;
+    bool avail;
+    t_Level level;
+    id = updateUserJson["id"].get<uint>();
+    name = updateUserJson["name"].get<std::string>();
+    if (name.empty()) {
+        sendBadRequest400TextMessage("名前に何も入力されてません 入力データ：{" + updateUserJson.dump() + "}");
+        return;
+    }
+    rowPass = updateUserJson["pass"].get<std::string>();
+    if (rowPass.length() != 0 && rowPass.length() < 8) {
+        sendBadRequest400TextMessage("パスワードは8文字以上にして下さい");
+        return;
+    }
+    avail = updateUserJson["avail"].get<std::string>() == "true" ? true : false;
+    auto stringlevel = updateUserJson["level"].get<std::string>();
+    try {
+        level = stringToT_Level(stringlevel);
+    } catch (const std::invalid_argument &e) {
+        sendBadRequest400TextMessage("存在しない権限が指定されました");
+        return;
+    }
+    db->update(id, name, rowPass, avail, level);
+    sendOK200TextMessage("アカウントが更新されました");
+    return;
+}
+
 void CGIController::getAllUser() {
     auto allUsers = db->GetAllUserData();
     std::vector<nlohmann::json> usersJson;
@@ -197,6 +228,8 @@ void CGIController::execMethod(const std::string &methodName, const nlohmann::js
         return;
     } else if (methodName == "search") {
         searchUsers(args);
+    } else if (methodName == "update") {
+        updateUser(args);
     } else if (methodName == "getAll") {
         getAllUser();
         return;
@@ -220,6 +253,16 @@ static void sendOK200Json(const nlohmann::json &json) {
                   "Cache-Control: no-cache\n\n";
     std::printf("%s", header);
     std::printf("%s", json.dump().c_str());
+}
+
+static void sendOK200TextMessage(const std::string &message) {
+    auto header = "Content-type: text/plain; charset=utf-8\n"
+                  "Status: 200 OK\n"
+                  "Access-Control-Allow-Methods: POST\n"
+                  "Pragma: no-cache\n"
+                  "Cache-Control: no-cache\n\n";
+    std::printf("%s", header);
+    std::printf("%s", message.c_str());
 }
 
 static void sendCreated201TextMessage(const std::string &message) {

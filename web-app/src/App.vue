@@ -17,6 +17,7 @@
     <main>
       <AddUserFormModal @submit="sendFormAddUser" />
       <SearchUserFormModal @submit="sendFormSearchUserData" />
+      <UpdateUserFormModal :OriginalUser="updatedUser" @submit="sendFormUpdateUser" />
       <div id="userInfo-data-aria">
         <p>表示数：{{ userInfo.length }}</p>
         <div v-if="SearchConditionsMessageIsNotEmpty" id="search-conditions">
@@ -24,9 +25,14 @@
           <button id="reset-search-conditions-button" @click="reloadTable">
             検索条件をリセットする
           </button>
+        </div>
+        <button @click="opemUpdateTest">更新テスト</button>
       </div>
-      </div>
-      <UserInfoTable :userInfo="userInfo" @selectedChanged="selectedChange" />
+      <UserInfoTable
+        :userInfo="userInfo"
+        @selectedChanged="selectedChange"
+        @update="openUpdateUserFormModal"
+      />
     </main>
   </div>
 </template>
@@ -36,14 +42,18 @@ import { Component, Vue } from 'vue-property-decorator'
 import UserInfoTable from '@/components/UserInfoTable.vue'
 import AddUserFormModal from '@/components/AddUserFormModal.vue'
 import SearchUserFormModal from '@/components/SearchUserFormModal.vue'
+import UpdateUserFormModal from '@/components/UpdateUserFormModal.vue'
 import { User } from '@/model/User'
 import { UserDBGateway } from '@/model/UserDBGateway'
 import { SearchUserData } from '@/model/SearchUserData'
+import { AvailToPrintString } from '@/model/PrintString'
+
 @Component({
   components: {
     UserInfoTable,
     AddUserFormModal,
-    SearchUserFormModal
+    SearchUserFormModal,
+    UpdateUserFormModal
   }
 })
 export default class App extends Vue {
@@ -51,6 +61,25 @@ export default class App extends Vue {
   public gateway = new UserDBGateway()
   public userInfo: User[] = []
   public selectedIds: number[] = []
+
+  public updatedUser?: User = {
+    id: -1,
+    name: '',
+    pass: '',
+    avail: true,
+    level: 'ADMIN'
+  }
+
+  public opemUpdateTest(): void {
+    this.updatedUser = {
+      id: 10,
+      name: 'テスト 太郎',
+      pass: '******',
+      avail: true,
+      level: 'ADMIN'
+    }
+    this.$modal.show('update-user-form-modal')
+  }
 
   public SearchConditionsMessage?: string = ''
 
@@ -75,7 +104,12 @@ export default class App extends Vue {
     }
     return message
   }
-  
+
+  public async sendFormUpdateUser(updatedUser: User): Promise<void> {
+    await this.gateway.sendFormUpdateUser(updatedUser)
+    this.reloadTable()
+  }
+
   public async reloadTable(): Promise<void> {
     const data = await this.gateway.getUserDataAsync()
     this.userInfo = data
@@ -114,6 +148,10 @@ export default class App extends Vue {
     }
   }
 
+  public async openUpdateUserFormModal(updatedUser: User): Promise<void> {
+    this.updatedUser = updatedUser
+    this.$modal.show('update-user-form-modal')
+  }
   public selectedChange(selectedIds: number[]): void {
     this.selectedIds = selectedIds
   }

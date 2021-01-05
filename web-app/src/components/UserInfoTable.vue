@@ -6,6 +6,7 @@
       <th class="password-column">パスワード</th>
       <th class="avail-column">状態</th>
       <th class="level-column">権限</th>
+      <th class="update-button-column">更新</th>
       <th><!--余白--></th>
     </thead>
     <tbody>
@@ -21,6 +22,9 @@
         <td>*******</td>
         <td class="table-other-content">{{ user.avail | availToString }}</td>
         <td class="table-other-content">{{ user.level | levelToString }}</td>
+        <td class="table-other-content">
+          <button id="update-button" type="button" @click.stop="update(user)">更新</button>
+        </td>
         <td><!--余白--></td>
       </SelectableTr>
     </tbody>
@@ -57,6 +61,11 @@ export default class UserInfoTable extends Vue {
     this.slectedIds = this.slectedIds.filter(x => x !== Number(key))
     this.$emit('selectedChanged', this.slectedIds)
   }
+
+  public update(updatedUser: User) {
+    this.$emit('update', updatedUser)
+    return
+  }
 }
 </script>
 <style scoped>
@@ -78,5 +87,16 @@ export default class UserInfoTable extends Vue {
 
 .level-column {
   width: 5rem;
+}
+
+.update-button-column {
+  width: 7rem;
+}
+
+#update-button {
+  flex-shrink: 0;
+  font-size: 1.4em;
+  padding: 0.2em 0.8em;
+  margin: 0px 5px;
 }
 </style>

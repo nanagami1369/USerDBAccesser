@@ -189,4 +189,41 @@ export class UserDBGateway {
     alert('検索に失敗しました。\n' + text)
     return []
   }
+
+  public async sendFormUpdateUser(updatedUser: User): Promise<void> {
+    const method = 'POST'
+    const sendUpdateJson = JSON.stringify({
+      method: 'update',
+      id: updatedUser.id,
+      name: updatedUser.name,
+      pass: updatedUser.pass,
+      avail: updatedUser.avail.toString(),
+      level: updatedUser.level
+    })
+    let response: Response
+    try {
+      response = await fetch(this.cgiUrl, {
+        method: method,
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: sendUpdateJson
+      })
+    } catch (error) {
+      alert(error)
+      return
+    }
+    const text = await response.text()
+    switch (response.status) {
+      case 404:
+        alert('404 NotFound\nCGIが存在しません')
+        return
+      case 200:
+        console.log(text)
+        return
+      default:
+        alert('更新に失敗しました。\n' + text)
+        return
+    }
+  }
 }

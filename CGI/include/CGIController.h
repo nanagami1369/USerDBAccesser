@@ -11,6 +11,7 @@ class CGIController {
     void addUser(const nlohmann::json &addUserJson);
     void removeUsers(const nlohmann::json &removeUserJson);
     void searchUsers(const nlohmann::json &searchUserDataJson);
+    void updateUser(const nlohmann::json &updateUserJson);
     void getAllUser();
 
   public:
