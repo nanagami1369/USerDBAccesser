@@ -26,7 +26,6 @@
             検索条件をリセットする
           </button>
         </div>
-        <button @click="opemUpdateTest">更新テスト</button>
       </div>
       <UserInfoTable
         :userInfo="userInfo"
@@ -68,17 +67,6 @@ export default class App extends Vue {
     pass: '',
     avail: true,
     level: 'ADMIN'
-  }
-
-  public opemUpdateTest(): void {
-    this.updatedUser = {
-      id: 10,
-      name: 'テスト 太郎',
-      pass: '******',
-      avail: true,
-      level: 'ADMIN'
-    }
-    this.$modal.show('update-user-form-modal')
   }
 
   public SearchConditionsMessage?: string = ''
