@@ -20,8 +20,6 @@ services:
       - user_net
     ports:
       - 8080:80
-    volumes:
-      - ./web-app/dist:/usr/local/apache2/htdocs
     environment:
       MYSQL_HOST: mysql:3306
       MYSQL_USER: mysqluser
