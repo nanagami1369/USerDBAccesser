@@ -22,7 +22,8 @@ export class UserDBGateway {
       alert('404 NotFound\nCGIが存在しません')
       return []
     }
-    const userDataJsonObject = await response.json()
+    const userDataJsonText = await response.text()
+    const userDataJsonObject = JSON.parse(userDataJsonText, this.AvailConverter)
     const userData: User[] = userDataJsonObject.users
     return userData
   }
