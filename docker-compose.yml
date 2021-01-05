@@ -2,6 +2,7 @@ version: "3.8"
 services:
   mysql:
     image: mariadb:10.5.8
+    container_name: user_db_accesser_db_container
     ports:
       - 3306:3306
     networks:
@@ -18,6 +19,8 @@ services:
     build:
       context: ./
       dockerfile: Dockerfile
+    image: cgi:1.0.0
+    container_name: user_db_accesser_cgi_container
     networks:
       - user_net
     ports:
