@@ -45,7 +45,7 @@ import UpdateUserFormModal from '@/components/UpdateUserFormModal.vue'
 import { User } from '@/model/User'
 import { UserDBGateway } from '@/model/UserDBGateway'
 import { SearchUserData } from '@/model/SearchUserData'
-import { AvailToPrintString } from '@/model/PrintString'
+import { AvailToPrintString, LevelToPrintString } from '@/model/PrintString'
 
 @Component({
   components: {
@@ -85,7 +85,7 @@ export default class App extends Vue {
       message += ` ${availString}な `
     }
     if (searchUserData.level !== 'null') {
-      message += ` ${searchUserData.level} `
+      message += ` ${LevelToPrintString(searchUserData.level)} `
     }
     if (message.length === 0) {
       return ''
