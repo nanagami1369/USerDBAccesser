@@ -5,3 +5,7 @@ export interface User {
   avail: boolean
   level: string
 }
+
+export interface SelectableUser extends User {
+  isSelected: boolean
+}

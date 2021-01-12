@@ -19,7 +19,7 @@
       <SearchUserFormModal @submit="sendFormSearchUserData" />
       <UpdateUserFormModal :OriginalUser="updatedUser" @submit="sendFormUpdateUser" />
       <div id="userInfo-data-aria">
-        <p>表示数：{{ userInfo.length }}</p>
+        <p>表示数：{{ selectableUserInfo.length }}</p>
         <div v-if="SearchConditionsMessageIsNotEmpty" id="search-conditions">
           検索条件：{{ SearchConditionsMessage }}アカウント
           <button id="reset-search-conditions-button" @click="reloadTable">
@@ -28,7 +28,7 @@
         </div>
       </div>
       <UserInfoTable
-        :userInfo="userInfo"
+        :selectableUserInfo="selectableUserInfo"
         @selectedChanged="selectedChange"
         @update="openUpdateUserFormModal"
       />
@@ -42,7 +42,7 @@ import UserInfoTable from '@/components/UserInfoTable.vue'
 import AddUserFormModal from '@/components/AddUserFormModal.vue'
 import SearchUserFormModal from '@/components/SearchUserFormModal.vue'
 import UpdateUserFormModal from '@/components/UpdateUserFormModal.vue'
-import { User } from '@/model/User'
+import { User, SelectableUser } from '@/model/User'
 import { UserDBGateway } from '@/model/UserDBGateway'
 import { SearchUserData } from '@/model/SearchUserData'
 import { AvailToPrintString, LevelToPrintString } from '@/model/PrintString'
@@ -58,8 +58,8 @@ import { AvailToPrintString, LevelToPrintString } from '@/model/PrintString'
 export default class App extends Vue {
   public title = 'UserDBAccesser'
   public gateway = new UserDBGateway()
-  public userInfo: User[] = []
-  public selectedIds: Set<number> = new Set<number>()
+  public selectableUserInfo: SelectableUser[] = []
+  public selectedUsers: User[] = []
 
   public updatedUser?: User = {
     id: -1,
@@ -100,7 +100,17 @@ export default class App extends Vue {
 
   public async reloadTable(): Promise<void> {
     const data = await this.gateway.getUserDataAsync()
-    this.userInfo = data
+    this.selectableUserInfo = data.map(x => {
+      return {
+        id: x.id,
+        name: x.name,
+        pass: x.pass,
+        avail: x.avail,
+        level: x.level,
+        isSelected: false
+      }
+    })
+    this.selectedUsers = []
     this.SearchConditionsMessage = ''
   }
 
@@ -110,25 +120,16 @@ export default class App extends Vue {
   }
 
   public async sendFormRemoveUser(): Promise<void> {
-    if (this.selectedIds.size === 0) {
+    if (this.selectedUsers.length === 0) {
       alert('アカウントが選択されていません')
       return
     }
     let message = ''
-    // 表示中のデータに選択されたデータがなかった場合無視する
-    this.selectedIds.forEach(selectedId => {
-      const user = this.userInfo.find(x => x.id === selectedId)
-      if (user !== undefined) {
-        message += `id : ${user.id} , name : ${user.name}\n`
-      }
+    this.selectedUsers.forEach(x => {
+      message += `id : ${x.id} , name : ${x.name}\n`
     })
-    // 一件も表示されていなかった場合終了
-    if (message.length === 0) {
-      alert('アカウントが選択されていません')
-      return
-    }
     if (confirm('以下のアカウントを削除します\nよろしいですか？\n\n' + message)) {
-      await this.gateway.sendFormRemoveUsers(Array.from(this.selectedIds))
+      await this.gateway.sendFormRemoveUsers(Array.from(this.selectedUsers.map(x => x.id)))
       await this.reloadTable()
     }
   }
@@ -137,7 +138,17 @@ export default class App extends Vue {
     const searchedUsers = await this.gateway.sendSearchUserData(searchUserData)
     // 検索結果があれば反映
     if (searchedUsers.length !== 0) {
-      this.userInfo = searchedUsers
+      this.selectableUserInfo = searchedUsers.map(x => {
+        return {
+          id: x.id,
+          name: x.name,
+          pass: x.pass,
+          avail: x.avail,
+          level: x.level,
+          isSelected: false
+        }
+      })
+      this.selectedUsers = []
       this.SearchConditionsMessage = this.SearchUserDataToString(searchUserData)
     }
   }
@@ -146,8 +157,8 @@ export default class App extends Vue {
     this.updatedUser = updatedUser
     this.$modal.show('update-user-form-modal')
   }
-  public selectedChange(selectedIds: Set<number>): void {
-    this.selectedIds = selectedIds
+  public selectedChange(selectedUsers: User[]): void {
+    this.selectedUsers = selectedUsers
   }
 
   public async created() {

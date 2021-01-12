@@ -10,12 +10,11 @@
       <th><!--余白--></th>
     </thead>
     <tbody>
-      <SelectableTr
-        v-for="user in userInfo"
+      <tr
+        v-for="user in selectableUserInfo"
         :key="user.id"
-        :selectKey="user.id"
-        @addKey="add"
-        @removeKey="remove"
+        @click="selectedChange(user)"
+        :class="{ selected: user.isSelected }"
       >
         <td class="table-number">{{ user.id }}</td>
         <td>{{ user.name }}</td>
@@ -26,15 +25,14 @@
           <button id="update-button" type="button" @click.stop="update(user)">更新</button>
         </td>
         <td><!--余白--></td>
-      </SelectableTr>
+      </tr>
     </tbody>
   </table>
 </template>
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator'
-import SelectableTr from '@/components/SelectableTr.vue'
-import { User } from '@/model/User'
+import { User, SelectableUser } from '@/model/User'
 import { AvailToPrintString, LevelToPrintString } from '@/model/PrintString'
 
 @Component({
@@ -45,21 +43,18 @@ import { AvailToPrintString, LevelToPrintString } from '@/model/PrintString'
     levelToString: function(level: string) {
       return LevelToPrintString(level)
     }
-  },
-  components: {
-    SelectableTr
   }
 })
 export default class UserInfoTable extends Vue {
-  @Prop() private userInfo!: User[]
-  private slectedIds: Set<number> = new Set<number>()
-  public add(key: string): void {
-    this.slectedIds.add(Number(key))
-    this.$emit('selectedChanged', this.slectedIds)
-  }
-  public remove(key: string): void {
-    this.slectedIds.delete(Number(key))
-    this.$emit('selectedChanged', this.slectedIds)
+  @Prop()
+  private selectableUserInfo!: SelectableUser[]
+
+  public selectedChange(selectedUser: SelectableUser): void {
+    selectedUser.isSelected = !selectedUser.isSelected
+    this.$emit(
+      'selectedChanged',
+      this.selectableUserInfo.filter(x => x.isSelected)
+    )
   }
 
   public update(updatedUser: User) {
@@ -98,5 +93,9 @@ export default class UserInfoTable extends Vue {
   font-size: 1.4em;
   padding: 0.2em 0.8em;
   margin: 0px 5px;
+}
+
+.selected td {
+  background-color: orange;
 }
 </style>
