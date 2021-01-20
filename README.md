@@ -6,7 +6,7 @@
 
 ユーザーデータを作成、保存、閲覧、削除、無効化、有効化できるアプリ
 
-## 使用したコマンド＆ライブラリー
+## 使用したコマンド
 
 - git 2.20.1
 - sqlite3 3.27.2 2019-02-25 16:06:06
@@ -18,8 +18,6 @@
 - node-js 12.20.0
 - httpd 2.4
 - vue": 2.6.11
-- vee-validate": 3.4.5
-- vue-js-modal": 1.3.34
 
 ## CUI
 
@@ -78,3 +76,11 @@
 - JSON for Modern C++
   - Copyright (c) 2013-2020 Niels Lohmann
   - [MIT License](https://github.com/nlohmann/json/blob/develop/LICENSE.MIT)
+
+- vue-js-modal
+  - Copyright（c）2017 Yev Vlasenko
+  - [MIT License](https://github.com/euvl/vue-js-modal/blob/master/LICENSE.md)
+
+- vee-validate
+  - Copyright（c）Abdelrahman Awad <logaretm1@gmail.com>
+  - [MIT License](https://github.com/logaretm/vee-validate/blob/main/LICENSE)
